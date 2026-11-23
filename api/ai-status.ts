@@ -1,8 +1,8 @@
 import { json } from './_lib/auth.js'
 
 // Free check of the AI Gateway connection: reads the credit balance, makes no model call.
-export async function GET() {
-  const key = process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN
+export async function GET(req: Request) {
+  const key = process.env.AI_GATEWAY_API_KEY || req.headers.get('x-vercel-oidc-token') || process.env.VERCEL_OIDC_TOKEN
   if (!key) return json({ ok: false, reason: 'no_credentials' })
   try {
     const r = await fetch('https://ai-gateway.vercel.sh/v1/credits', { headers: { Authorization: `Bearer ${key}` } })

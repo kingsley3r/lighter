@@ -406,17 +406,18 @@ function Recent({ onPick }: { onPick: (r: RecentFood) => void }) {
               <div className="title">{r.name}</div>
               <div className="small muted">P {Math.round(r.protein_g)} · C {Math.round(r.carbs_g)} · F {Math.round(r.fat_g)}{r.count > 1 ? ` · logged ${r.count}×` : ''}</div>
             </div>
-      <ShowMore left={more.left} onClick={more.more} />
             <div className="small num muted">{r.kcal} kcal</div>
           </button>
         ))}
       </div>
+      <ShowMore left={more.left} onClick={more.more} />
     </div>
   )
 }
 
 function PhotoScan({ onResult }: { onResult: (d: Draft) => void }) {
   const input = useRef<HTMLInputElement>(null)
+  const library = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
@@ -438,14 +439,18 @@ function PhotoScan({ onResult }: { onResult: (d: Draft) => void }) {
 
   return (
     <div>
-      <input ref={input} type="file" accept="image/*" capture="environment" hidden onChange={(e) => onFile(e.target.files?.[0])} />
+      <input ref={input} type="file" accept="image/*" capture="environment" hidden onChange={(e) => { onFile(e.target.files?.[0]); e.target.value = '' }} />
+      <input ref={library} type="file" accept="image/*" hidden onChange={(e) => { onFile(e.target.files?.[0]); e.target.value = '' }} />
       {preview && <img src={preview} alt="" style={{ width: '100%', borderRadius: 14, marginBottom: 10, maxHeight: 260, objectFit: 'cover' }} />}
       <label className="field"><span>Anything the photo can’t show? (optional)</span>
         <input className="input" value={hint} onChange={(e) => setHint(e.target.value)} placeholder="e.g. cooked with butter, large plate" />
       </label>
-      <button className="btn block" disabled={busy} onClick={() => input.current?.click()}>
-        {busy ? 'Analysing your meal…' : preview ? 'Take another photo' : '📷 Take a photo of your meal'}
-      </button>
+      {busy ? <button className="btn block" disabled>Analysing your meal…</button> : (
+        <div className="row" style={{ gap: 8 }}>
+          <button className="btn grow" onClick={() => input.current?.click()}>📷 {preview ? 'New photo' : 'Take photo'}</button>
+          <button className="btn ghost grow" onClick={() => library.current?.click()}>🖼️ Upload</button>
+        </div>
+      )}
       {err && <p className="small" style={{ color: 'var(--warn)' }}>{err}</p>}
       <p className="small muted">The AI estimates the dish, portion size, calories and macros. You can correct everything before saving.</p>
     </div>

@@ -656,3 +656,7 @@ section.card .fr-mini { border: 0; padding: 0; background: none; }
 .coach-ideas { margin: 6px 0 8px; }
 .coach-ideas .chip { white-space: nowrap; font-size: 13px; padding: 7px 12px; }
 .coach-input { display: flex; gap: 8px; }
+.pet-card { flex-wrap: wrap; }
+.pet-actions { flex: 1 0 100%; display: flex; gap: 8px; }
+.pet-actions .btn { padding-left: 12px; padding-right: 12px; white-space: nowrap; }
+.pet-actions .pet-feed { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }

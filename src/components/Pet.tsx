@@ -392,13 +392,14 @@ export default function PetCard({ meals, targets, feed, onFeed }: { meals: MealL
             )
           })}
         </div>
-        <div className="row" style={{ gap: 8, marginTop: 12 }}>
-          <button className="btn grow" onClick={onFeed}>📷 Feed {name}</button>
+
+      </div>
+      <div className="pet-actions">
+          <button className="btn pet-feed" onClick={onFeed}>📷 Feed {name}</button>
           <button className="btn ghost" onClick={() => setCoach(true)} aria-label={`Ask ${name}`}>💬</button>
           <button className="btn ghost" onClick={() => setWardrobe(true)} aria-label="Wardrobe">👕</button>
           <button className="btn ghost" onClick={() => setTrophies(true)} aria-label="Trophies">🏆 {unlocked}</button>
         </div>
-      </div>
       {coach && <Coach name={name} level={lv.lvl} onClose={() => setCoach(false)} />}
       {wardrobe && <Wardrobe trophies={stats?.trophies ?? []} level={lv.lvl} name={name} onClose={() => setWardrobe(false)} />}
       {trophies && <TrophySheet trophies={stats?.trophies ?? []} name={name} xp={xp} onClose={() => setTrophies(false)} />}
