@@ -7,6 +7,7 @@ import Food from './pages/Food'
 import Train from './pages/Train'
 import Stats from './pages/Stats'
 import Me from './pages/Me'
+import FriendsSheet from './components/Friends'
 import { IconFood, IconMe, IconStats, IconToday, IconTrain } from './components/icons'
 
 export type Tab = 'today' | 'food' | 'train' | 'stats' | 'me'
@@ -19,8 +20,16 @@ const TABS: { id: Tab; label: string; Icon: () => React.JSX.Element }[] = [
   { id: 'me', label: 'Me', Icon: IconMe },
 ]
 
+// ?friend=CODE invite links survive sign-up via localStorage
+try {
+  const c = new URLSearchParams(location.search).get('friend')
+  if (c) { localStorage.setItem('friend-invite', c.toUpperCase().slice(0, 8)); history.replaceState(null, '', location.pathname) }
+} catch { /* ignore */ }
+
 export default function App() {
   const { session, profile, loading } = useStore()
+  const [invite, setInvite] = useState<string | null>(() => { try { return localStorage.getItem('friend-invite') } catch { return null } })
+  const closeInvite = () => { setInvite(null); try { localStorage.removeItem('friend-invite') } catch { /* ignore */ } }
   const [tab, setTab] = useState<Tab>(() => {
     try {
       return (sessionStorage.getItem('tab') as Tab) || 'today'
@@ -61,6 +70,7 @@ export default function App() {
           ))}
         </div>
       </nav>
+      {invite && <FriendsSheet invite={invite} onClose={closeInvite} />}
     </>
   )
 }

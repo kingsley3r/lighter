@@ -12,6 +12,7 @@ import type { Activity, Profile, Sex } from '../lib/types'
 import { PetFigure, TrophySheet } from '../components/Pet'
 import { RemindersSheet } from '../components/Reminders'
 import { HealthSheet } from '../components/Steps'
+import FriendsSheet from '../components/Friends'
 import { levelFor, usePipStats } from '../lib/pip'
 import { macroTargets } from '../lib/calc'
 
@@ -219,6 +220,7 @@ function SettingsSheet({ onClose }: { onClose: () => void }) {
 export default function Me() {
   const { profile, session, version } = useStore()
   const [settings, setSettings] = useState(false)
+  const [friends, setFriends] = useState(false)
   const [edit, setEdit] = useState<Part[] | null>(null)
   const [now, setNow] = useState<number | null>(null)
   useEffect(() => { latestWeight().then((w) => setNow(w ? Number(w.weight_kg) : null)) }, [version])
@@ -287,7 +289,14 @@ export default function Me() {
         </div>
       </section>
 
+      <button className="card fr-entry" onClick={() => setFriends(true)}>
+        <span style={{ fontSize: 26 }}>👯</span>
+        <span className="grow"><b>Friends & challenges</b><span className="small muted">Add friends, cheer their Pips, race on steps</span></span>
+        <span className="muted">›</span>
+      </button>
+
       <TrophyCard />
+      {friends && <FriendsSheet onClose={() => setFriends(false)} />}
 
       {edit && <Sheet title={edit.includes('targets') ? 'Daily targets' : 'My details'} onClose={() => setEdit(null)}><ProfileForm parts={edit} onDone={() => setEdit(null)} /></Sheet>}
       {settings && <SettingsSheet onClose={() => setSettings(false)} />}

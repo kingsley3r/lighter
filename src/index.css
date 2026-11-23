@@ -600,3 +600,29 @@ button.pet-stage { background: none; border: 0; padding: 0; font: inherit; color
 .health-steps ul { padding-left: 18px; margin: 6px 0 0; }
 .health-key { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0; }
 .health-key code { flex: 1 1 100%; font-size: 12px; padding: 8px 10px; border-radius: 10px; background: var(--surface-2); word-break: break-all; user-select: all; -webkit-user-select: all; }
+
+/* friends + challenges */
+.fr-entry { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; color: var(--text); cursor: pointer; }
+.fr-entry .grow, .fr-mini .grow { display: flex; flex-direction: column; min-width: 0; }
+.fr-code { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 14px; background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.fr-code > div { display: flex; flex-direction: column; }
+.fr-code b { font-size: 24px; letter-spacing: .12em; }
+.fr-req { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); margin-bottom: 8px; }
+.fr-chs { display: flex; flex-direction: column; gap: 8px; }
+.fr-mini { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+section.card .fr-mini { border: 0; padding: 0; background: none; }
+.fr-row { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.fr-pip, .board-pip { flex: none; display: grid; place-items: center; }
+.fr-pip .pet, .board-pip .pet { overflow: visible; }
+.fr-cheers { display: flex; gap: 6px; margin-top: 6px; }
+.fr-cheers button { border: 1.5px solid var(--border); background: var(--surface); border-radius: 999px; width: 38px; height: 34px; font-size: 17px; cursor: pointer; }
+.fr-cheers button:active { transform: scale(1.2); }
+.cheer-banner { display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin: -4px -4px 10px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
+.cheer-banner:last-child { margin-bottom: -4px; }
+.cheer-emojis { font-size: 22px; animation: petPop .5s cubic-bezier(.3, 1.6, .5, 1); }
+.board { display: flex; flex-direction: column; gap: 6px; }
+.board-row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 12px; background: var(--surface-2); }
+.board-row.me { outline: 2px solid var(--accent); }
+.board-rank { width: 26px; text-align: center; font-weight: 800; font-size: 18px; }
+.board-bar { height: 8px; border-radius: 99px; background: var(--border); margin-top: 6px; overflow: hidden; }
+.board-bar i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }

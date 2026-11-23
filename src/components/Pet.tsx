@@ -5,6 +5,7 @@ import { useEffect, useId, useMemo, useState, type PointerEvent as RPointerEvent
 import type { MealLog } from '../lib/types'
 import { levelFor, newlyUnlocked, quality, usePipStats, type Trophy } from '../lib/pip'
 import { useStore } from '../store'
+import { supabase } from '../lib/supabase'
 import { Sheet, useToast } from './ui'
 
 // "Pip": an original round sprout creature that lives in the Food tab.
@@ -277,6 +278,17 @@ export default function PetCard({ meals, targets, feed, onFeed }: { meals: MealL
   const mood = useMemo(() => moodFor(meals, targets), [meals, targets])
   const xp = stats?.xp ?? 0
   const lv = levelFor(xp)
+
+  // share Pip's look with friends (name, level, outfit only)
+  const { profile } = useStore()
+  useEffect(() => {
+    if (!stats) return
+    const row = { name: profile?.display_name ?? null, pip_name: name, pip_level: lv.lvl, outfit }
+    const key = JSON.stringify(row)
+    try { if (localStorage.getItem('buddy-sync') === key) return } catch { /* ignore */ }
+    supabase.from('buddy_status').upsert({ ...row, updated_at: new Date().toISOString() }).then(({ error }) => { if (!error) try { localStorage.setItem('buddy-sync', key) } catch { /* ignore */ } })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stats, name, lv.lvl, JSON.stringify(outfit), profile?.display_name])
 
   // level-up + trophy celebrations
   useEffect(() => {
