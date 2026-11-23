@@ -10,6 +10,7 @@ import { addDays, fmtShort, fmtTime, isoDate, parseDate, startOfWeek, WEEKDAYS, 
 import { copyMeals, dayRange, mealPlanForWeek, mealsBetween, sum } from '../lib/data'
 import { generateMealPlan } from '../data/recipes'
 import GroceryList from '../components/GroceryList'
+import MealPrep from '../components/MealPrep'
 import { supabase } from '../lib/supabase'
 import type { MealLog, MealPlan, MealType, PlannedMeal } from '../lib/types'
 
@@ -20,17 +21,20 @@ export default function Food() {
   const [tab, setTab] = useState<'log' | 'plan' | 'recipes'>('log')
   const [shop, setShop] = useState(false)
   const [out, setOut] = useState(false)
+  const [prep, setPrep] = useState(false)
   const { bump } = useStore()
   return (
     <>
       <header className="page-head"><h1>Food</h1>
         <div className="row" style={{ gap: 6 }}>
           <button className="btn ghost sm" onClick={() => setOut(true)} aria-label="Eating out">🍽️ Out</button>
+          <button className="btn ghost sm" onClick={() => setPrep(true)} aria-label="Meal prep">🥡 Prep</button>
           <button className="btn ghost sm" onClick={() => setShop(true)} aria-label="Shopping list">🛒 List</button>
         </div>
       </header>
       {out && <AddMeal eatingOut onClose={() => setOut(false)} onSaved={bump} />}
       {shop && <GroceryList onClose={() => setShop(false)} />}
+      {prep && <MealPrep onClose={() => setPrep(false)} />}
       <div style={{ marginBottom: 14 }}>
         <Seg options={[{ id: 'log', label: 'Diary' }, { id: 'plan', label: 'Meal plan' }, { id: 'recipes', label: 'Recipes' }]} value={tab} onChange={setTab} />
       </div>

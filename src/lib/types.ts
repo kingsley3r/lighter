@@ -40,7 +40,7 @@ export interface MealLog {
   protein_g: number
   carbs_g: number
   fat_g: number
-  source: 'manual' | 'search' | 'barcode' | 'photo' | 'plan'
+  source: 'manual' | 'search' | 'barcode' | 'photo' | 'plan' | 'prep'
   photo_path?: string | null
   notes?: string | null
 }

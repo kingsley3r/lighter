@@ -689,3 +689,15 @@ section.card .fr-mini { border: 0; padding: 0; background: none; }
 .run-strip span.run{background:var(--accent)}
 .run-strip span.past{opacity:.15}
 .run-strip span.now{opacity:1}
+
+/* meal prep */
+.prep-batch{padding:8px 0;border-top:1px solid var(--border)}
+.prep-batch:first-of-type{border-top:0}
+.prep-pick{display:flex;align-items:center;gap:12px}
+.prep-list{display:flex;flex-direction:column;margin-top:6px}
+.prep-row{display:flex;align-items:center;gap:10px;padding:10px 4px;background:none;border:0;border-bottom:1px solid var(--border);text-align:left;font:inherit;color:inherit;cursor:pointer}
+.prep-macros{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.prep-stepper{gap:12px;align-items:center}
+.prep-stepper b{font-size:20px;min-width:24px;text-align:center}
+.prep-days{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.prep-days .chip{padding:5px 10px;font-size:13px;cursor:default}
