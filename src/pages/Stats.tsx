@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useStore } from '../store'
 import { Seg, Sheet, useToast } from '../components/ui'
+import { ProgressCard } from '../components/ProgressPhotos'
 import { BarChart, LineChart, type Pt } from '../components/charts'
 import { addDays, isoDate, startOfDay } from '../lib/dates'
 import { mealsBetween, measurementsSince, sleepSince, sum, waterBetween, weightsSince, workoutsBetween, type Measurement } from '../lib/data'
@@ -106,6 +107,8 @@ export default function Stats() {
       </section>
 
       <SmartTarget exp={exp} onApplied={bump} />
+
+      <ProgressCard />
 
       <section className="card">
         <div className="card-head"><h2>Body measurements</h2><button className="btn ghost sm" onClick={() => setMeasureOpen(true)}>+ Log</button></div>
