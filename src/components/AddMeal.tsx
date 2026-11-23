@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { guessMealType, recentFoods, type RecentFood } from '../lib/data'
 import type { MealType } from '../lib/types'
 import Autocomplete, { type Suggestion } from './Autocomplete'
+import Restaurant from './Restaurant'
 import { matchScore, parseQty, suggestFoods, type CommonFood } from '../data/common-foods'
 
 type Mode = 'photo' | 'text' | 'search' | 'recent' | 'barcode'
@@ -75,8 +76,9 @@ function foodSuggestions(text: string, recents: RecentFood[], onDraft: (d: Draft
   return [...mine, ...common].slice(0, limit)
 }
 
-export default function AddMeal({ onClose, onSaved, date }: { onClose: () => void; onSaved: () => void; date?: Date }) {
+export default function AddMeal({ onClose, onSaved, date, eatingOut = false }: { onClose: () => void; onSaved: () => void; date?: Date; eatingOut?: boolean }) {
   const [mode, setMode] = useState<Mode>('photo')
+  const [out, setOut] = useState(eatingOut)
   const [food, setFood] = useState<FoodItem | null>(null)
   const [draft, setDraft] = useState<Draft | null>(null)
 
@@ -87,8 +89,14 @@ export default function AddMeal({ onClose, onSaved, date }: { onClose: () => voi
   }
 
   return (
-    <Sheet title="Log food" onClose={onClose}>
-      {!draft && (
+    <Sheet title={out && !draft ? 'Eating out' : 'Log food'} onClose={onClose}>
+      {!draft && out && (
+        <>
+          <button className="link" style={{ paddingLeft: 0, marginBottom: 8 }} onClick={() => setOut(false)}>‹ Other ways to log</button>
+          <Restaurant onLog={(d) => setDraft(d)} />
+        </>
+      )}
+      {!draft && !out && (
         <>
           <Seg<Mode>
             options={[
@@ -101,6 +109,7 @@ export default function AddMeal({ onClose, onSaved, date }: { onClose: () => voi
             value={mode}
             onChange={setMode}
           />
+          <button className="out-entry" onClick={() => setOut(true)}>🍽️ <b>Eating out?</b> <span className="muted">Check a dish or menu before you order</span> <span className="muted">›</span></button>
           <div style={{ marginTop: 14 }}>
             {mode === 'photo' && <PhotoScan onResult={(d) => setDraft(d)} />}
             {mode === 'text' && <Describe onResult={(d) => setDraft(d)} onDraft={setDraft} />}

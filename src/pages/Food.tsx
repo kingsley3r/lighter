@@ -19,9 +19,17 @@ const LABEL: Record<MealType, string> = { breakfast: 'Breakfast', lunch: 'Lunch'
 export default function Food() {
   const [tab, setTab] = useState<'log' | 'plan' | 'recipes'>('log')
   const [shop, setShop] = useState(false)
+  const [out, setOut] = useState(false)
+  const { bump } = useStore()
   return (
     <>
-      <header className="page-head"><h1>Food</h1><button className="btn ghost sm" onClick={() => setShop(true)} aria-label="Shopping list">🛒 List</button></header>
+      <header className="page-head"><h1>Food</h1>
+        <div className="row" style={{ gap: 6 }}>
+          <button className="btn ghost sm" onClick={() => setOut(true)} aria-label="Eating out">🍽️ Out</button>
+          <button className="btn ghost sm" onClick={() => setShop(true)} aria-label="Shopping list">🛒 List</button>
+        </div>
+      </header>
+      {out && <AddMeal eatingOut onClose={() => setOut(false)} onSaved={bump} />}
       {shop && <GroceryList onClose={() => setShop(false)} />}
       <div style={{ marginBottom: 14 }}>
         <Seg options={[{ id: 'log', label: 'Diary' }, { id: 'plan', label: 'Meal plan' }, { id: 'recipes', label: 'Recipes' }]} value={tab} onChange={setTab} />
