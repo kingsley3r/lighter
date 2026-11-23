@@ -469,30 +469,20 @@ button.pet-stage { background: none; border: 0; padding: 0; font: inherit; color
 .set-list button { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: none; border: 0; border-bottom: 1px solid var(--border); font: inherit; color: var(--text); cursor: pointer; text-align: left; }
 .set-list button:last-child { border-bottom: 0; }
 
-/* launch splash */
-.splash { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: radial-gradient(120% 80% at 50% 35%, #3a9a70 0%, #2f7d5b 45%, #1d5a40 100%); color: #f6f7f4; transition: opacity .45s ease, transform .45s ease; }
-.splash.out { opacity: 0; transform: scale(1.06); pointer-events: none; }
-.splash-mark { position: relative; width: 168px; height: 168px; display: grid; place-items: center; }
-.splash-ring { position: absolute; inset: 0; transform: rotate(-90deg); }
-.splash-ring circle { fill: none; stroke-width: 9; stroke-linecap: round; }
-.splash-ring .track { stroke: rgba(255,255,255,.16); }
-.splash-ring .fill { stroke: #c9f2d9; stroke-dasharray: 553; stroke-dashoffset: 553; animation: splashRing 1.3s .15s cubic-bezier(.6, 0, .3, 1) forwards; }
-.splash-logo { width: 108px; height: 108px; border-radius: 26px; box-shadow: 0 10px 30px rgba(0,0,0,.25); transform: scale(0); animation: splashPop .6s .1s cubic-bezier(.3, 1.6, .5, 1) forwards; }
-.splash-leaf { transform-origin: 256px 400px; animation: splashLift 1s .65s ease-in-out 1; }
-.splash-spark { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #c9f2d9; opacity: 0; }
-.splash-spark.s1 { top: 6px; left: 50%; animation: splashSpark .7s 1.35s ease-out forwards; --dx: 0px; --dy: -22px; }
-.splash-spark.s2 { top: 40px; right: 2px; animation: splashSpark .7s 1.45s ease-out forwards; --dx: 18px; --dy: -14px; }
-.splash-spark.s3 { top: 40px; left: 2px; animation: splashSpark .7s 1.5s ease-out forwards; --dx: -18px; --dy: -14px; }
-.splash-pulse { width: 200px; height: 34px; }
-.splash-pulse path { fill: none; stroke: #c9f2d9; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 320; stroke-dashoffset: 320; animation: splashPulse 1s .55s ease-out forwards; }
-.splash-word { font-size: 34px; font-weight: 800; letter-spacing: -.5px; opacity: 0; transform: translateY(14px); animation: splashUp .5s .9s ease-out forwards; }
-.splash-tag { font-size: 13px; opacity: 0; transform: translateY(10px); animation: splashUp .5s 1.1s ease-out forwards; color: #d7efe1; }
-@keyframes splashRing { to { stroke-dashoffset: 0; } }
-@keyframes splashPop { to { transform: scale(1); } }
-@keyframes splashLift { 0%, 100% { transform: translateY(0) scale(1); } 30% { transform: translateY(-26px) scale(1.04, .96); } 55% { transform: translateY(0) scale(1.06, .94); } 75% { transform: translateY(-12px); } }
-@keyframes splashSpark { 0% { opacity: 0; transform: translate(-50%, 0) scale(.4); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), var(--dy)) scale(1); } }
-@keyframes splashPulse { to { stroke-dashoffset: 0; } }
-@keyframes splashUp { to { opacity: 1; transform: translateY(0); } }
+/* launch splash: Pip drops in and flexes */
+.splash { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: var(--bg); transition: opacity .35s ease; }
+.splash.out { opacity: 0; pointer-events: none; }
+.splash-pip { position: relative; width: 150px; height: 150px; transform: translateY(-120vh); animation: splashDrop .55s .05s cubic-bezier(.5, 0, .75, .3) forwards, splashSquash .45s .6s cubic-bezier(.3, 1.6, .5, 1); transform-origin: 50% 100%; }
+.splash-pip .pet .pet-bob { animation: none; }
+.splash-star { position: absolute; color: var(--accent); font-size: 16px; opacity: 0; }
+.splash-star.a { left: 4px; top: 40px; animation: splashStar .6s .7s ease-out forwards; --dx: -18px; --dy: -14px; }
+.splash-star.b { right: 4px; top: 40px; animation: splashStar .6s .75s ease-out forwards; --dx: 18px; --dy: -14px; }
+.splash-star.c { left: 50%; top: -6px; animation: splashStar .6s .8s ease-out forwards; --dx: 0px; --dy: -18px; }
+.splash-word { font-size: 32px; font-weight: 800; letter-spacing: -.5px; color: var(--accent); opacity: 0; transform: scale(.6); animation: splashWord .4s .75s cubic-bezier(.3, 1.6, .5, 1) forwards; }
+@keyframes splashDrop { to { transform: translateY(0); } }
+@keyframes splashSquash { 0% { transform: translateY(0) scale(1.18, .8); } 60% { transform: translateY(-10px) scale(.95, 1.06); } 100% { transform: translateY(0) scale(1, 1); } }
+@keyframes splashStar { 0% { opacity: 0; transform: translate(0, 0) scale(.4); } 40% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.1); } }
+@keyframes splashWord { to { opacity: 1; transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .splash *, .splash { animation-duration: .01s !important; animation-delay: 0s !important; } }
 
 .show-more { margin-top: 10px; }
