@@ -7,6 +7,7 @@ export interface Profile {
   display_name: string | null
   step_target?: number | null
   pip_outfit?: { hat?: string; gear?: string; bg?: string } | null
+  milestone_kg?: number | null
   program?: import("./programs").ProgramState | null
   sex: Sex | null
   birth_year: number | null

@@ -8,6 +8,7 @@ import Train from './pages/Train'
 import Stats from './pages/Stats'
 import Me from './pages/Me'
 import FriendsSheet from './components/Friends'
+import MilestoneWatcher from './components/Milestones'
 import { IconFood, IconMe, IconStats, IconToday, IconTrain } from './components/icons'
 
 export type Tab = 'today' | 'food' | 'train' | 'stats' | 'me'
@@ -53,6 +54,7 @@ export default function App() {
 
   return (
     <>
+      <MilestoneWatcher />
       <main className="app">
         {tab === 'today' && <Today go={setTab} />}
         {tab === 'food' && <Food />}

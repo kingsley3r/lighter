@@ -84,7 +84,8 @@ const BODY: Record<Mood, [string, string]> = {
 }
 
 /** Pip's look by level: bigger, then arms, biceps, abs, pecs, V-taper, headband, champion belt. */
-export function PetFigure({ mood, level, eating, flex = false, size = 170, pet = null, outfit }: { mood: Mood; level: number; eating: boolean; flex?: boolean; size?: number; pet?: { v: number; key: number } | null; outfit?: Outfit }) {
+export function PetFigure({ mood, level, eating, flex = false, size = 170, pet = null, outfit, stage }: { mood: Mood; level: number; eating: boolean; flex?: boolean; size?: number; pet?: { v: number; key: number } | null; outfit?: Outfit; stage?: number }) {
+  const st = stage ?? readStage()
   const [c1, c2] = BODY[mood]
   const L = Math.max(1, Math.min(8, level))
   const scale = 0.74 + (L - 1) * 0.055 // 0.74 → 1.125
@@ -120,6 +121,7 @@ export function PetFigure({ mood, level, eating, flex = false, size = 170, pet =
             {leaves >= 2 && <path d="M101 52 Q80 36 66 46 Q82 60 101 52Z" fill="#6cc27f" />}
             {leaves >= 3 && <path d="M103 60 Q124 54 132 64 Q116 72 103 60Z" fill="#58ad6c" />}
             {leaves >= 4 && <path d="M100 64 Q82 62 74 72 Q90 78 100 64Z" fill="#62b977" />}
+            {st > 0 && <Bloom stage={st} />}
             {L >= 6 && (
               <g transform="translate(104 34)">
                 {[0, 72, 144, 216, 288].map((a) => <ellipse key={a} cx="0" cy="-8" rx="5" ry="8" fill="#f6a5c0" transform={`rotate(${a})`} />)}
@@ -261,6 +263,30 @@ function Mouth({ mood, eating, ink }: { mood: Mood; eating: boolean; ink: string
 }
 
 export interface FeedEvent { id: number; name: string; kcal: number; protein_g: number; carbs_g: number; fat_g: number }
+
+/** Pip's evolution stage = 5 kg milestones reached (kept in localStorage so every Pip on this device matches). */
+export function readStage(): number {
+  try { return Number(localStorage.getItem('pip-stage') || 0) } catch { return 0 }
+}
+
+/** Grows on top of the sprout: bud → flower → bigger flower with sparkles → golden flower with a halo. */
+export function Bloom({ stage }: { stage: number }) {
+  if (stage === 1) return <g className="pet-bloom"><ellipse cx="104" cy="32" rx="6" ry="8" fill="#f08bb0" /><path d="M98 36 Q104 42 110 36" stroke="#3f8a5a" strokeWidth="3" fill="none" /></g>
+  const gold = stage >= 4
+  const r = stage >= 3 ? 11 : 8
+  const petals = Array.from({ length: 6 }, (_, i) => {
+    const a = (i * Math.PI) / 3
+    return <ellipse key={i} cx={104 + Math.cos(a) * r} cy={28 + Math.sin(a) * r} rx={r * 0.62} ry={r * 0.42} transform={`rotate(${(a * 180) / Math.PI} ${104 + Math.cos(a) * r} ${28 + Math.sin(a) * r})`} fill={gold ? '#f6c453' : '#f493b8'} />
+  })
+  return (
+    <g className="pet-bloom">
+      {gold && <ellipse cx="104" cy="12" rx="22" ry="5" fill="none" stroke="#f6c453" strokeWidth="3" opacity=".9" />}
+      {petals}
+      <circle cx="104" cy="28" r={r * 0.5} fill={gold ? '#e07b2a' : '#ffd35a'} />
+      {stage >= 3 && <g fill="#ffd35a">{[[70, 22], [140, 18], [150, 50], [58, 52]].map(([x, y], i) => <path key={i} className="pet-spark" d={`M${x} ${y - 5} L${x + 1.5} ${y - 1.5} L${x + 5} ${y} L${x + 1.5} ${y + 1.5} L${x} ${y + 5} L${x - 1.5} ${y + 1.5} L${x - 5} ${y} L${x - 1.5} ${y - 1.5}Z`} />)}</g>}
+    </g>
+  )
+}
 
 export default function PetCard({ meals, targets, feed, onFeed }: { meals: MealLog[]; targets: Targets; feed: FeedEvent | null; onFeed: () => void }) {
   const { version } = useStore()

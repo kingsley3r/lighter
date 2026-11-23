@@ -174,7 +174,7 @@ export default function FriendsSheet({ onClose, invite }: { onClose: () => void;
         <p className="small muted" style={{ marginTop: 0 }}>No friends yet. Tap Invite and send your code. Friends see your name, your Pip and your steps, never your food or weight.</p>
       ) : accepted.map((f) => (
         <div key={f.friendship_id} className="fr-row">
-          <div className="fr-pip"><PetFigure mood="happy" level={f.pip_level ?? 1} eating={false} size={58} outfit={f.outfit ?? undefined} /></div>
+          <div className="fr-pip"><PetFigure mood="happy" level={f.pip_level ?? 1} eating={false} size={58} outfit={f.outfit ?? undefined} stage={0} /></div>
           <div className="grow" style={{ minWidth: 0 }}>
             <div className="row between"><b>{f.name}</b><button className="link small" onClick={() => remove(f)} aria-label={`Remove ${f.name}`}>⋯</button></div>
             <div className="small muted">{f.pip_name} · Lv {f.pip_level ?? 1} · 👣 {fmt(f.steps_today)} today · {fmt(f.steps_week)} this week</div>
@@ -248,7 +248,7 @@ function Board({ c, onClose }: { c: Challenge; onClose: () => void }) {
           {rows.map((r, i) => (
             <div key={r.user_id} className={`board-row${r.is_me ? ' me' : ''}`}>
               <span className="board-rank">{i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</span>
-              <div className="board-pip"><PetFigure mood={i === 0 ? 'happy' : 'content'} level={r.pip_level} eating={false} flex={i === 0} size={44} outfit={r.outfit} /></div>
+              <div className="board-pip"><PetFigure mood={i === 0 ? 'happy' : 'content'} level={r.pip_level} eating={false} flex={i === 0} size={44} outfit={r.outfit} stage={0} /></div>
               <div className="grow" style={{ minWidth: 0 }}>
                 <div className="row between"><b>{r.is_me ? 'You' : r.name}</b><span className="num small">{fmt(Number(r.value))} {KIND[c.kind].unit}</span></div>
                 <div className="board-bar"><i style={{ width: `${(Number(r.value) / max) * 100}%` }} /></div>

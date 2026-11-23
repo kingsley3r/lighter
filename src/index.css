@@ -701,3 +701,20 @@ section.card .fr-mini { border: 0; padding: 0; background: none; }
 .prep-stepper b{font-size:20px;min-width:24px;text-align:center}
 .prep-days{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
 .prep-days .chip{padding:5px 10px;font-size:13px;cursor:default}
+
+/* milestones */
+.milestone{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:16px;background:rgba(10,30,20,.55);backdrop-filter:blur(4px);animation:msIn .3s ease}
+.ms-confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:201}
+.ms-card{position:relative;z-index:202;width:100%;max-width:360px;background:var(--surface);border-radius:24px;padding:22px 20px 18px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:msPop .5s cubic-bezier(.2,1.4,.4,1)}
+.ms-kicker{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#c9971d}
+.ms-big{font-size:56px;font-weight:800;line-height:1.05;color:var(--accent)}
+.ms-pip{display:grid;place-items:center;margin:4px 0}
+.ms-pip.evolved svg{animation:msEvolve .9s ease}
+.ms-text{font-size:17px;margin:4px 0 6px}
+.pet-spark{animation:spark 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.pet-spark:nth-child(2n){animation-delay:.8s}
+@keyframes msIn{from{opacity:0}}
+@keyframes msPop{from{transform:scale(.7);opacity:0}}
+@keyframes msEvolve{0%{filter:brightness(1)}30%{filter:brightness(2.4) drop-shadow(0 0 18px #f6c453);transform:scale(1.12)}100%{filter:brightness(1)}}
+@keyframes spark{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1.1)}}
+@media (prefers-reduced-motion: reduce){.ms-card,.ms-pip.evolved svg,.pet-spark{animation:none}}
