@@ -28,6 +28,7 @@ export default defineConfig({
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//],
         maximumFileSizeToCacheInBytes: 3000000,
+        importScripts: ['push-sw.js'],
       },
     }),
   ],

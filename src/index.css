@@ -488,3 +488,11 @@ button.pet-stage { background: none; border: 0; padding: 0; font: inherit; color
 .show-more { margin-top: 10px; }
 .me-tiles.four { grid-template-columns: repeat(4, 1fr); }
 .me-tiles.four .me-tile b { font-size: 16px; }
+
+/* reminders */
+.rem-list .rem-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+.rem-list .rem-row:last-child { border-bottom: 0; }
+.rem-main { flex: 1; display: flex; gap: 10px; align-items: flex-start; min-width: 0; cursor: pointer; }
+.rem-main input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex: none; }
+.rem-main > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.rem-time { width: 118px; flex: none; min-height: 38px; padding: 6px 8px; }

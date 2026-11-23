@@ -10,6 +10,7 @@ import { supabase } from '../lib/supabase'
 import { fastingVisible } from '../components/Fasting'
 import type { Activity, Profile, Sex } from '../lib/types'
 import { PetFigure, TrophySheet } from '../components/Pet'
+import { RemindersSheet } from '../components/Reminders'
 import { levelFor, usePipStats } from '../lib/pip'
 import { macroTargets } from '../lib/calc'
 
@@ -179,6 +180,8 @@ function SettingsSheet({ onClose }: { onClose: () => void }) {
   const [fasting, setFasting] = useState<'on' | 'off'>(fastingVisible() ? 'on' : 'off')
   const [edit, setEdit] = useState<Part[] | null>(null)
   const [busy, setBusy] = useState(false)
+  const [rem, setRem] = useState(false)
+  if (rem) return <RemindersSheet onClose={() => setRem(false)} />
   if (edit) return <Sheet title={edit.includes('food') ? 'Food preferences' : 'Training setup'} onClose={() => setEdit(null)}><ProfileForm parts={edit} onDone={() => setEdit(null)} /></Sheet>
   return (
     <Sheet title="Settings" onClose={onClose}>
@@ -190,6 +193,7 @@ function SettingsSheet({ onClose }: { onClose: () => void }) {
         </label>
       </section>
       <div className="set-list">
+        <button onClick={() => setRem(true)}><span>🔔 Reminders</span><span className="muted">›</span></button>
         <button onClick={() => setEdit(['food'])}><span>🥗 Food preferences</span><span className="muted">›</span></button>
         <button onClick={() => setEdit(['training'])}><span>🏋️ Training setup</span><span className="muted">›</span></button>
       </div>
