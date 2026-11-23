@@ -674,3 +674,18 @@ section.card .fr-mini { border: 0; padding: 0; background: none; }
 .insights{display:flex;flex-direction:column;gap:14px}
 .insight-bar{display:grid;grid-template-columns:86px 1fr 46px;align-items:center;gap:8px;margin-top:6px}
 .insight-bar .num{text-align:right}
+
+/* programs */
+.program-cta,.program-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer}
+.program-opt{margin-bottom:10px}
+.feel-opts{display:grid;gap:8px}
+.run-now{border-radius:18px;padding:22px 16px;text-align:center;color:#fff;background:var(--accent);transition:background .3s}
+.run-now.walk,.run-now.warm,.run-now.cool{background:#3c7dd9}
+.run-now.done{background:#d98b2b}
+.run-label{font-size:18px;font-weight:700;letter-spacing:.02em}
+.run-time{font-size:64px;font-weight:800;line-height:1.1;margin:4px 0}
+.run-strip{display:flex;gap:2px;height:10px;margin-top:14px;border-radius:99px;overflow:hidden}
+.run-strip span{background:#3c7dd9;opacity:.45}
+.run-strip span.run{background:var(--accent)}
+.run-strip span.past{opacity:.15}
+.run-strip span.now{opacity:1}
