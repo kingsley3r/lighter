@@ -13,6 +13,7 @@ import ExerciseFigure from '../components/ExerciseFigure'
 import { ExerciseGuide, ExerciseLibrary } from '../components/ExerciseGuide'
 import { guideFor } from '../data/guide'
 import TrainCalendar from '../components/TrainCalendar'
+import { ProgramCard } from '../components/Programs'
 import { matchScore } from '../data/common-foods'
 import { EXERCISES } from '../data/exercises'
 import { fmtDuration, fmtKm, fmtPace, SPORTS } from '../lib/geo'
@@ -32,6 +33,8 @@ export default function Train() {
   const [logView, setLogView] = useState<WorkoutLog | null>(null)
   const [library, setLibrary] = useState(false)
   const [guide, setGuide] = useState<string | null>(null)
+  const [progOpen, setProgOpen] = useState(false)
+  const [strengthDone, setStrengthDone] = useState(0)
   const ws = startOfWeek(date)
   const wsKey = isoDate(ws)
 
@@ -45,14 +48,15 @@ export default function Train() {
     load()
   }, [load, version])
 
-  async function regenerate() {
-    if (!profile) return
-    const p = generateWorkoutPlan(profile.equipment ?? [], profile.training_days ?? 3, profile.session_minutes ?? 45)
+  async function regenerate(days?: number) {
+    if (!profile) return false
+    const p = generateWorkoutPlan(profile.equipment ?? [], days ?? profile.training_days ?? 3, profile.session_minutes ?? 45)
     await supabase.from('workout_plans').update({ is_active: false }).eq('is_active', true)
     const { error } = await supabase.from('workout_plans').insert({ plan: p, is_active: true })
-    if (error) return toast(error.message)
-    toast('Plan updated ✓')
-    load()
+    if (error) { toast(error.message); return false }
+    if (!days) toast('Plan updated ✓')
+    await load()
+    return true
   }
 
   const wd = weekdayIdx(date)
@@ -91,11 +95,13 @@ export default function Train() {
         <TrainCalendar version={version} selected={date} onSelect={(d) => { setDate(d); setView('week') }} />
       )}
 
+      <ProgramCard plan={plan} strengthDone={strengthDone} onStrength={(w) => { setProgOpen(true); setOpen(w) }} onBuildPlan={() => regenerate(3)} onLogged={() => { load(); bump() }} />
+
       {!plan ? (
         <section className="card" style={{ textAlign: 'center' }}>
           <h2>No workout plan yet</h2>
           <p className="small muted">Built from your equipment and the days you want to train.</p>
-          <button className="btn block" onClick={regenerate}>Build my plan</button>
+          <button className="btn block" onClick={() => regenerate()}>Build my plan</button>
         </section>
       ) : beforePlan ? null : planned ? (
         <section className={`card wo-hero${plannedDone ? ' done' : ''}`}>
@@ -165,10 +171,10 @@ export default function Train() {
           {profile?.training_days ?? 3}× per week · {profile?.session_minutes ?? 45} min · {equipLabels.length ? equipLabels.join(', ') : 'bodyweight only'}
         </p>
         <p className="small muted">Change equipment or days under Me, then rebuild the plan.</p>
-        <button className="btn outline block" onClick={regenerate}>↻ Rebuild plan</button>
+        <button className="btn outline block" onClick={() => regenerate()}>↻ Rebuild plan</button>
       </section>
 
-      {open && <WorkoutSheet w={open} isToday={isToday} past={!isToday && !isFuture ? date : undefined} onClose={() => setOpen(null)} onDone={() => { setOpen(null); load(); bump() }} />}
+      {open && <WorkoutSheet w={open} isToday={isToday} past={!isToday && !isFuture ? date : undefined} onClose={() => { setOpen(null); setProgOpen(false) }} onDone={() => { setOpen(null); load(); bump(); if (progOpen) { setProgOpen(false); setStrengthDone((n) => n + 1) } }} />}
       {tracking && <Tracker onClose={() => setTracking(false)} onSaved={async (id) => { setTracking(false); setDate(new Date()); await load(); bump(); const { data } = await supabase.from('workout_logs').select('*').eq('id', id).single(); if (data) setDetail(data as WorkoutLog) }} />}
       {detail && <ActivityDetail a={detail} onClose={() => setDetail(null)} onDeleted={() => { setDetail(null); load(); bump() }} />}
       {library && <ExerciseLibrary equipment={profile?.equipment ?? []} onClose={() => setLibrary(false)} />}
