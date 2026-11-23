@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { PetFigure } from './Pet'
+import { readLocalOutfit } from '../lib/outfits'
 
 // Launch screen: Pip drops in, lands with a squash, flexes, and the wordmark pops up. ~1.5 s.
 export default function Splash() {
@@ -20,7 +21,7 @@ export default function Splash() {
   return (
     <div className={`splash${phase === 'out' ? ' out' : ''}`} onClick={() => setPhase('out')} aria-hidden="true">
       <div className="splash-pip">
-        <PetFigure mood="happy" level={lvl} eating={false} flex size={150} />
+        <PetFigure mood="happy" level={lvl} eating={false} flex size={150} outfit={readLocalOutfit()} />
         <span className="splash-star a">✦</span><span className="splash-star b">✦</span><span className="splash-star c">✦</span>
       </div>
       <div className="splash-word">Lighter</div>

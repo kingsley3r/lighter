@@ -3,6 +3,7 @@ import { useStore } from '../store'
 import { addDays, fmtShort, parseDate, WEEKDAYS, WEEKDAYS_LONG } from '../lib/dates'
 import { GOAL_ICON, GOAL_TEXT, goalFor, pipLine, setGoal, suggestGoals, thisWeek, weekSummary, type WeekSummary, type WeeklyGoal } from '../lib/weekly'
 import { PetFigure } from './Pet'
+import { readLocalOutfit } from '../lib/outfits'
 import { Bar, Sheet, useToast } from './ui'
 
 /** The week a check-in reviews: on Sunday the current week, otherwise last week. */
@@ -33,7 +34,7 @@ export function WeeklyCard({ onOpen }: { onOpen: () => void }) {
   if (!state) return null
   if (state.due) return (
     <button className="card weekly-due" onClick={onOpen}>
-      <div className="weekly-pip"><PetFigure mood="happy" level={4} eating={false} flex size={64} /></div>
+      <div className="weekly-pip"><PetFigure mood="happy" level={4} eating={false} flex size={64} outfit={readLocalOutfit()} /></div>
       <div className="grow" style={{ textAlign: 'left' }}>
         <div style={{ fontWeight: 700 }}>Your weekly check-in is ready</div>
         <div className="small muted">Pip looked at your week and has a goal for you.</div>
@@ -100,7 +101,7 @@ export function WeeklySheet({ onClose, onDone }: { onClose: () => void; onDone: 
   return (
     <Sheet title="Weekly check-in" onClose={onClose}>
       <div className="weekly-hero">
-        <PetFigure mood="happy" level={5} eating={false} flex size={110} />
+        <PetFigure mood="happy" level={5} eating={false} flex size={110} outfit={readLocalOutfit()} />
         <div className="weekly-say">{pipLine(s, prev)}</div>
       </div>
       <div className="small muted" style={{ textAlign: 'center', marginBottom: 12 }}>{title}</div>

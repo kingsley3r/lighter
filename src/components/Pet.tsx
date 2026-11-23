@@ -1,3 +1,6 @@
+import { GearBack, GearFront, Hat } from './PipWear'
+import { ITEMS, useOutfit, type Outfit } from '../lib/outfits'
+import Wardrobe, { PipBackground } from './Wardrobe'
 import { useEffect, useId, useMemo, useState, type PointerEvent as RPointerEvent } from 'react'
 import type { MealLog } from '../lib/types'
 import { levelFor, newlyUnlocked, quality, usePipStats, type Trophy } from '../lib/pip'
@@ -79,7 +82,7 @@ const BODY: Record<Mood, [string, string]> = {
 }
 
 /** Pip's look by level: bigger, then arms, biceps, abs, pecs, V-taper, headband, champion belt. */
-export function PetFigure({ mood, level, eating, flex = false, size = 170, pet = null }: { mood: Mood; level: number; eating: boolean; flex?: boolean; size?: number; pet?: { v: number; key: number } | null }) {
+export function PetFigure({ mood, level, eating, flex = false, size = 170, pet = null, outfit }: { mood: Mood; level: number; eating: boolean; flex?: boolean; size?: number; pet?: { v: number; key: number } | null; outfit?: Outfit }) {
   const [c1, c2] = BODY[mood]
   const L = Math.max(1, Math.min(8, level))
   const scale = 0.74 + (L - 1) * 0.055 // 0.74 → 1.125
@@ -122,6 +125,7 @@ export function PetFigure({ mood, level, eating, flex = false, size = 170, pet =
               </g>
             )}
           </g>
+          <GearBack id={outfit?.gear} />
           {/* feet */}
           <ellipse cx="76" cy="174" rx={15 + (L >= 5 ? 3 : 0)} ry="8" fill={c2} />
           <ellipse cx="124" cy="174" rx={15 + (L >= 5 ? 3 : 0)} ry="8" fill={c2} />
@@ -147,7 +151,7 @@ export function PetFigure({ mood, level, eating, flex = false, size = 170, pet =
             </g>
           )}
           {/* headband */}
-          {L >= 4 && (
+          {L >= 4 && !outfit?.hat && outfit?.gear !== 'headphones' && (
             <g>
               <path d="M58 92 Q100 74 142 92" stroke="#e0565b" strokeWidth="7" fill="none" strokeLinecap="round" />
               <path d="M142 92 l12 -2 M142 94 l11 6" stroke="#e0565b" strokeWidth="4" strokeLinecap="round" />
@@ -190,6 +194,8 @@ export function PetFigure({ mood, level, eating, flex = false, size = 170, pet =
           <ellipse cx="134" cy="126" rx="10" ry="6" fill="#f39aa8" opacity={mood === 'happy' ? 0.75 : mood === 'angry' ? 0.2 : 0.45} />
           <Eyes mood={mood} ink={ink} />
           <Mouth mood={mood} eating={eating} ink={ink} />
+ <GearFront id={outfit?.gear} shoulderL={shoulderL} shoulderR={shoulderR} flexing={flexing} />
+          <Hat id={outfit?.hat} />
           {mood === 'sleepy' && <text x="148" y="78" className="pet-z" fontSize="18" fill="var(--muted)">z</text>}
           {mood === 'queasy' && <ellipse cx="150" cy="104" rx="4" ry="6" fill="#8ccbea" className="pet-sweat" />}
           {mood === 'grumpy' && <text x="138" y="92" fontSize="20" className="pet-vein">💢</text>}
@@ -262,6 +268,8 @@ export default function PetCard({ meals, targets, feed, onFeed }: { meals: MealL
   const [eating, setEating] = useState<FeedEvent | null>(null)
   const [bubble, setBubble] = useState<{ text: string; good: boolean; angry?: boolean } | null>(null)
   const [trophies, setTrophies] = useState(false)
+  const [wardrobe, setWardrobe] = useState(false)
+  const [outfit] = useOutfit()
   const [pet, setPet] = useState<{ v: number; key: number; text: string } | null>(null)
   const [taps, setTaps] = useState<{ at: number; n: number }>({ at: 0, n: 0 })
   const [hearts, setHearts] = useState<{ id: number; x: number; e: string }[]>([])
@@ -340,8 +348,9 @@ export default function PetCard({ meals, targets, feed, onFeed }: { meals: MealL
 
   return (
     <section className="card pet-card">
-      <button className="pet-stage" onPointerDown={petMe} aria-label={`Pet ${name}`}>
-        <PetFigure mood={shown} level={lv.lvl} eating={!!eating} flex={!!bubble?.good && !pet} pet={pet} />
+      <button className={`pet-stage${outfit.bg ? ' has-bg' : ''}`} onPointerDown={petMe} aria-label={`Pet ${name}`}>
+        <PipBackground id={outfit.bg} />
+        <PetFigure mood={shown} level={lv.lvl} eating={!!eating} flex={!!bubble?.good && !pet} pet={pet} outfit={outfit} />
         {eating && <span key={eating.id} className="pet-food">{foodEmoji(eating.name)}</span>}
         {pet && !eating ? <div key={pet.key} className="pet-bubble good">{pet.text}</div>
           : bubble && <div className={`pet-bubble${bubble.good ? ' good' : ''}${bubble.angry ? ' bad' : ''}`}>{bubble.text}</div>}
@@ -371,9 +380,11 @@ export default function PetCard({ meals, targets, feed, onFeed }: { meals: MealL
         </div>
         <div className="row" style={{ gap: 8, marginTop: 12 }}>
           <button className="btn grow" onClick={onFeed}>📷 Feed {name}</button>
+          <button className="btn ghost" onClick={() => setWardrobe(true)} aria-label="Wardrobe">👕</button>
           <button className="btn ghost" onClick={() => setTrophies(true)} aria-label="Trophies">🏆 {unlocked}</button>
         </div>
       </div>
+      {wardrobe && <Wardrobe trophies={stats?.trophies ?? []} level={lv.lvl} name={name} onClose={() => setWardrobe(false)} />}
       {trophies && <TrophySheet trophies={stats?.trophies ?? []} name={name} xp={xp} onClose={() => setTrophies(false)} />}
     </section>
   )
@@ -400,6 +411,7 @@ export function TrophySheet({ trophies, name, xp, onClose }: { trophies: Trophy[
               <span className="trophy-icon">{t.icon}</span>
               <b>{t.title}</b>
               <span className="small muted">{t.desc}</span>
+              {ITEMS.some((i) => i.trophy === t.id) && <span className="trophy-gift" title="Unlocks for Pip">🎁 {ITEMS.filter((i) => i.trophy === t.id).map((i) => i.icon).join(' ')}</span>}
               {ok ? <span className="trophy-done">Unlocked</span> : (
                 <div className="trophy-prog"><i style={{ width: `${Math.round((t.value / t.goal) * 100)}%` }} /><span>{t.value}/{t.goal}</span></div>
               )}

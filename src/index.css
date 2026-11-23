@@ -549,3 +549,43 @@ button.pet-stage { background: none; border: 0; padding: 0; font: inherit; color
 .pp-tag.l { left: 8px; } .pp-tag.r { right: 8px; }
 .pp-cap { left: 50%; transform: translateX(-50%); top: auto; bottom: 10px; }
 .pp-sum { text-align: center; margin: 4px 0 12px; }
+
+/* Pip wardrobe + backgrounds */
+.trophy-gift { font-size: 12px; margin-top: 2px; }
+.pet-stage.has-bg { border-radius: 16px; overflow: hidden; }
+.pet-stage .pet, .wr-stage .pet { position: relative; z-index: 1; }
+.pip-bg { position: absolute; inset: 0; border-radius: 16px; overflow: hidden; z-index: 0; }
+.pip-bg i, .pip-bg b { position: absolute; font-style: normal; font-weight: 400; }
+.pip-bg i::before, .pip-bg b::before { white-space: pre; line-height: 1; }
+.wr-stage { position: relative; height: 180px; display: flex; align-items: flex-end; justify-content: center; border-radius: 18px; background: var(--surface-2); overflow: hidden; }
+.wr-stage .pet { width: 150px; height: 150px; overflow: visible; margin-bottom: 6px; }
+.wr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.wr-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 12px 4px 10px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: inherit; cursor: pointer; min-height: 92px; }
+.wr-item.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.wr-item.locked { opacity: .55; }
+.wr-icon { font-size: 28px; line-height: 1.1; }
+.wr-name { font-size: 12.5px; font-weight: 600; text-align: center; }
+.wr-need { font-size: 10.5px; color: var(--muted); text-align: center; line-height: 1.2; }
+
+.bg-park { background: linear-gradient(#bfe3ff 0 62%, #8fd17f 62%); }
+.bg-park i::before { content: '🌳'; position: absolute; left: 6px; top: 40px; font-size: 44px; }
+.bg-park b::before { content: '☁️'; position: absolute; left: 96px; top: 8px; font-size: 26px; }
+.bg-gym { background: linear-gradient(#dfe4ea 0 66%, #a9805c 66%); }
+.bg-gym i::before { content: '🏋️'; position: absolute; left: 8px; top: 52px; font-size: 34px; opacity: .8; }
+.bg-gym b { left: 0; right: 0; top: 66%; height: 4px; background: #8a6546; }
+.bg-kitchen { background: repeating-linear-gradient(90deg, #fff 0 18px, #e9f4ef 18px 36px); }
+.bg-kitchen i::before { content: '🥦🍅'; position: absolute; left: 6px; top: 10px; font-size: 22px; }
+.bg-kitchen b { left: 0; right: 0; bottom: 0; height: 30%; background: #d9b38c; }
+.bg-beach { background: linear-gradient(#9fd8ff 0 50%, #4fb1e0 50% 64%, #f3d9a4 64%); }
+.bg-beach i::before { content: '☀️'; position: absolute; right: 8px; top: 6px; font-size: 28px; }
+.bg-beach b::before { content: '🌴'; position: absolute; left: 4px; top: 40px; font-size: 40px; }
+.bg-night { background: linear-gradient(#1c2340, #3a4470); }
+.bg-night i::before { content: '🌙'; position: absolute; right: 10px; top: 8px; font-size: 26px; }
+.bg-night b::before { content: '✦  ✧    ✦\A  ✧   ✦  ✧'; white-space: pre; position: absolute; left: 10px; top: 14px; color: #ffe9a6; font-size: 13px; line-height: 2; }
+.bg-mountain { background: linear-gradient(#cfe8ff, #eef6ff); }
+.bg-mountain i { left: -20%; right: -20%; bottom: 0; height: 70%; background: linear-gradient(135deg, transparent 49.5%, #8aa3b8 50%) left / 50% 100% no-repeat, linear-gradient(225deg, transparent 49.5%, #7b95aa 50%) right / 50% 100% no-repeat; }
+.bg-mountain b { left: 0; right: 0; bottom: 0; height: 16%; background: #8fd17f; }
+.bg-stadium { background: linear-gradient(#26324a 0 40%, #3d8b4f 40%); }
+.bg-stadium i::before { content: '💡'; position: absolute; left: 10px; top: 8px; font-size: 18px; }
+.bg-stadium i::after { content: '💡'; position: absolute; left: 118px; top: 8px; font-size: 18px; }
+.bg-stadium b { left: 12%; right: 12%; bottom: 12px; height: 14px; border-radius: 4px; background: #ffd45c; box-shadow: 0 -10px 0 -4px #c9971c; }
