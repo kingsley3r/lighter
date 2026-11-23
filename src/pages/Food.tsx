@@ -8,7 +8,8 @@ import DayStrip from '../components/DayStrip'
 import { macroTargets } from '../lib/calc'
 import { addDays, fmtShort, fmtTime, isoDate, parseDate, startOfWeek, WEEKDAYS, WEEKDAYS_LONG, weekdayIdx } from '../lib/dates'
 import { copyMeals, dayRange, mealPlanForWeek, mealsBetween, sum } from '../lib/data'
-import { generateMealPlan, shoppingList } from '../data/recipes'
+import { generateMealPlan } from '../data/recipes'
+import GroceryList from '../components/GroceryList'
 import { supabase } from '../lib/supabase'
 import type { MealLog, MealPlan, MealType, PlannedMeal } from '../lib/types'
 
@@ -17,9 +18,11 @@ const LABEL: Record<MealType, string> = { breakfast: 'Breakfast', lunch: 'Lunch'
 
 export default function Food() {
   const [tab, setTab] = useState<'log' | 'plan' | 'recipes'>('log')
+  const [shop, setShop] = useState(false)
   return (
     <>
-      <header className="page-head"><h1>Food</h1></header>
+      <header className="page-head"><h1>Food</h1><button className="btn ghost sm" onClick={() => setShop(true)} aria-label="Shopping list">🛒 List</button></header>
+      {shop && <GroceryList onClose={() => setShop(false)} />}
       <div style={{ marginBottom: 14 }}>
         <Seg options={[{ id: 'log', label: 'Diary' }, { id: 'plan', label: 'Meal plan' }, { id: 'recipes', label: 'Recipes' }]} value={tab} onChange={setTab} />
       </div>
@@ -245,7 +248,7 @@ function Plan() {
           <button className="btn block" onClick={() => logPlanned(open)}>I ate this today</button>
         </Sheet>
       )}
-      {shop && plan && <Shopping plan={plan} weekKey={isoDate(ws)} onClose={() => setShop(false)} />}
+      {shop && <GroceryList plan={plan} onClose={() => setShop(false)} />}
     </>
   )
 }
@@ -254,33 +257,3 @@ function fmtQty(q: number) {
   return Number.isInteger(q) ? String(q) : q.toFixed(2).replace(/\.?0+$/, '')
 }
 
-function Shopping({ plan, weekKey, onClose }: { plan: MealPlan; weekKey: string; onClose: () => void }) {
-  const items = useMemo(() => shoppingList(plan), [plan])
-  const key = 'shop-' + weekKey
-  const [done, setDone] = useState<string[]>(() => {
-    try { return JSON.parse(localStorage.getItem(key) || '[]') } catch { return [] }
-  })
-  const toggle = (id: string) => {
-    const next = done.includes(id) ? done.filter((x) => x !== id) : [...done, id]
-    setDone(next)
-    try { localStorage.setItem(key, JSON.stringify(next)) } catch { /* ignore */ }
-  }
-  return (
-    <Sheet title="Shopping list" onClose={onClose}>
-      <p className="small muted" style={{ marginTop: 0 }}>For the week of {fmtShort(parseDate(weekKey))}. Tick off what you have.</p>
-      <div className="card" style={{ padding: '6px 14px' }}>
-        {items.map((x) => {
-          const id = x.item + x.unit
-          const on = done.includes(id)
-          return (
-            <div key={id} className="list-item" style={{ opacity: on ? 0.45 : 1 }}>
-              <CheckBox on={on} onClick={() => toggle(id)} label={x.item} />
-              <div className="grow" style={{ textDecoration: on ? 'line-through' : 'none' }}>{x.item}</div>
-              <div className="small muted num">{fmtQty(x.qty)} {x.unit}</div>
-            </div>
-          )
-        })}
-      </div>
-    </Sheet>
-  )
-}

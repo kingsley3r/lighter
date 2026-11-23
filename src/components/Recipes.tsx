@@ -5,6 +5,7 @@ import { askAI } from './AddMeal'
 import Autocomplete from './Autocomplete'
 import { Sheet, ShowMore, useMore, useToast } from './ui'
 import { supabase } from '../lib/supabase'
+import { addItems, type NewItem } from '../lib/grocery'
 import { useStore } from '../store'
 import type { MealType } from '../lib/types'
 
@@ -345,9 +346,21 @@ function guessType(): MealType {
 
 function RecipeSheet({ open, favs, pantry, onClose }: { open: Open; favs: Favs; pantry: string[]; onClose: () => void }) {
   const fav = favs.isFav(open)
-  const favBtn = <button className={`btn ghost rc-favbtn${fav ? ' on' : ''}`} onClick={() => favs.toggle(open)}>{fav ? '♥ In favourites' : '♡ Add to favourites'}</button>
   const { bump } = useStore()
   const toast = useToast()
+  const [added, setAdded] = useState(false)
+  async function toList(items: NewItem[]) {
+    try { await addItems(items); setAdded(true); toast('Added to your shopping list 🛒') } catch (e) { toast((e as Error).message) }
+  }
+  const shopItems = (): NewItem[] | null => open.kind === 'own'
+    ? open.r.ing.map((i) => ({ name: i.item, qty: i.qty, unit: i.unit, recipe: open.r.name }))
+    : detail?.ingredients ? detail.ingredients.map((i) => ({ name: i.item, note: i.measure || null, recipe: detail.name })) : null
+  const favBtn = () => (
+    <div className="row" style={{ gap: 8 }}>
+      <button className={`btn ghost rc-favbtn grow${fav ? ' on' : ''}`} onClick={() => favs.toggle(open)}>{fav ? '♥ Favourite' : '♡ Favourite'}</button>
+      <button className="btn ghost rc-favbtn grow" disabled={added || !shopItems()} onClick={() => { const it = shopItems(); if (it) toList(it) }}>{added ? '✓ On your list' : '🛒 Add to list'}</button>
+    </div>
+  )
   const [detail, setDetail] = useState<DbRecipe | null>(open.kind === 'db' && open.r.ingredients ? open.r : null)
   const [est, setEst] = useState<{ kcal: number; protein_g: number; carbs_g: number; fat_g: number } | null>(null)
   const [busy, setBusy] = useState(false)
@@ -386,7 +399,7 @@ function RecipeSheet({ open, favs, pantry, onClose }: { open: Open; favs: Favs; 
           <Stat v={r.kcal} l="kcal" /><Stat v={r.p} l="protein g" /><Stat v={r.c} l="carbs g" /><Stat v={r.f} l="fat g" />
         </div>
         <p className="small muted">⏱ {r.minutes} min · 1 serving</p>
-        {favBtn}
+        {favBtn()}
         <h3>Ingredients</h3>
         <ul className="ing-list">
           {r.ing.map((i) => <Ing key={i.item} ok={has(pantry, i.item)} show={pantry.length > 0} text={`${i.qty} ${i.unit} ${i.item}`} />)}
@@ -403,7 +416,7 @@ function RecipeSheet({ open, favs, pantry, onClose }: { open: Open; favs: Favs; 
     <Sheet title={r.name} onClose={onClose}>
       <img className="rc-hero" src={r.thumb} alt={r.name} decoding="async" />
       {r.area && <p className="small muted">{r.area} · {r.category}</p>}
-      {favBtn}
+      {favBtn()}
       {est ? (
         <>
           <div className="grid4">
