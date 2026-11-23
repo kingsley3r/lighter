@@ -8,6 +8,7 @@ import DrinkSheet from '../components/DrinkSheet'
 import { WeeklyCard, WeeklySheet } from '../components/WeeklyCheckin'
 import { HealthSheet, StepsCard } from '../components/Steps'
 import FriendsSheet, { FriendsCard } from '../components/Friends'
+import Coach from '../components/Coach'
 import { addDays, fmtDay, fmtTime, isoDate, weekdayIdx } from '../lib/dates'
 import { activeWorkoutPlan, addWater, dayRange, latestWeight, loggingStreak, mealsBetween, setSleep, setWeight, sleepSince, sum, waterBetween, workoutsBetween } from '../lib/data'
 import { macroTargets, round1 } from '../lib/calc'
@@ -23,7 +24,7 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
   const [sleep, setSl] = useState<SleepLog | null>(null)
   const [workout, setWorkout] = useState<PlannedWorkout | null>(null)
   const [doneToday, setDoneToday] = useState<WorkoutLog[]>([])
-  const [sheet, setSheet] = useState<null | 'meal' | 'weight' | 'sleep' | 'drink' | 'weekly' | 'health' | 'friends'>(null)
+  const [sheet, setSheet] = useState<null | 'meal' | 'weight' | 'sleep' | 'drink' | 'weekly' | 'health' | 'friends' | 'coach'>(null)
   const [streak, setStreak] = useState(0)
 
   const load = useCallback(async () => {
@@ -85,7 +86,10 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
           <div className="sub">{fmtDay(new Date())}</div>
           <h1>{greet}{profile.display_name ? `, ${profile.display_name}` : ''}</h1>
         </div>
-        {streak > 1 && <span className="pill accent" title="Days in a row with something logged">🔥 {streak} days</span>}
+        <div className="row" style={{ gap: 6 }}>
+          {streak > 1 && <span className="pill accent" title="Days in a row with something logged">🔥 {streak}</span>}
+          <button className="btn ghost sm" onClick={() => setSheet('coach')}>💬 Ask Pip</button>
+        </div>
       </header>
 
       <WeeklyCard onOpen={() => setSheet('weekly')} />
@@ -184,6 +188,7 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
       {sheet === 'meal' && <AddMeal onClose={() => setSheet(null)} onSaved={() => { load(); bump() }} />}
       {sheet === 'weight' && <WeightSheet current={weight?.weight_kg ?? profile.start_weight_kg ?? 80} onClose={() => setSheet(null)} onSaved={() => { load(); bump() }} />}
       {sheet === 'drink' && <DrinkSheet onClose={() => setSheet(null)} onSaved={() => { load(); bump() }} />}
+      {sheet === 'coach' && <Coach onClose={() => setSheet(null)} name={(() => { try { return localStorage.getItem('pet-name') || 'Pip' } catch { return 'Pip' } })()} level={(() => { try { return Number(localStorage.getItem('pip-level') || 4) } catch { return 4 } })()} />}
       {sheet === 'friends' && <FriendsSheet onClose={() => { setSheet(null); bump() }} />}
       {sheet === 'health' && <HealthSheet onClose={() => setSheet(null)} />}
       {sheet === 'weekly' && <WeeklySheet onClose={() => setSheet(null)} onDone={bump} />}
