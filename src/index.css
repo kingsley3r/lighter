@@ -667,3 +667,10 @@ section.card .fr-mini { border: 0; padding: 0; background: none; }
 .plateau-fix{display:flex;gap:10px;align-items:flex-start}
 .pf-icon{font-size:20px;width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:10px;background:var(--surface-2,rgba(0,0,0,.05))}
 .refeed{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,transparent);font-size:14px;line-height:1.4}
+
+/* morning check-in + insights */
+.morning{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;background:linear-gradient(135deg,color-mix(in srgb,#f6c453 22%,var(--surface)),var(--surface))}
+.morning-sun{font-size:30px}
+.insights{display:flex;flex-direction:column;gap:14px}
+.insight-bar{display:grid;grid-template-columns:86px 1fr 46px;align-items:center;gap:8px;margin-top:6px}
+.insight-bar .num{text-align:right}

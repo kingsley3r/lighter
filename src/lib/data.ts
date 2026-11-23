@@ -47,8 +47,8 @@ export async function addWater(ml: number) {
 export async function setWeight(dateIso: string, kg: number) {
   return supabase.from('weight_logs').upsert({ logged_on: dateIso, weight_kg: kg }, { onConflict: 'user_id,logged_on' })
 }
-export async function setSleep(dateIso: string, hours: number, quality: number | null) {
-  return supabase.from('sleep_logs').upsert({ night_of: dateIso, hours, quality }, { onConflict: 'user_id,night_of' })
+export async function setSleep(dateIso: string, hours: number, quality: number | null, extra: { mood?: number | null; energy?: number | null } = {}) {
+  return supabase.from('sleep_logs').upsert({ night_of: dateIso, hours, quality, ...extra }, { onConflict: 'user_id,night_of' })
 }
 
 export function sum<T>(arr: T[], f: (x: T) => number) {

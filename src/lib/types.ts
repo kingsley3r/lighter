@@ -29,7 +29,7 @@ export interface Profile {
 
 export interface WeightLog { id: number; logged_on: string; weight_kg: number }
 export interface WaterLog { id: number; logged_at: string; amount_ml: number }
-export interface SleepLog { id: number; night_of: string; hours: number; quality: number | null }
+export interface SleepLog { id: number; night_of: string; hours: number; quality: number | null; mood?: number | null; energy?: number | null }
 export interface MealLog {
   id: number
   eaten_at: string

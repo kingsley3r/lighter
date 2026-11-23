@@ -10,6 +10,8 @@ import { HealthSheet, StepsCard } from '../components/Steps'
 import FriendsSheet, { FriendsCard } from '../components/Friends'
 import Coach from '../components/Coach'
 import PlateauCard, { RefeedBanner } from '../components/Plateau'
+import { MorningCard, MorningSheet } from '../components/Morning'
+import { MOODS } from '../lib/insights'
 import { addDays, fmtDay, fmtTime, isoDate, weekdayIdx } from '../lib/dates'
 import { activeWorkoutPlan, addWater, dayRange, latestWeight, loggingStreak, mealsBetween, setSleep, setWeight, sleepSince, sum, waterBetween, workoutsBetween } from '../lib/data'
 import { macroTargets, round1 } from '../lib/calc'
@@ -94,6 +96,7 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
       </header>
 
       <RefeedBanner />
+      <MorningCard logged={!!sleep} onOpen={() => setSheet('sleep')} />
       <WeeklyCard onOpen={() => setSheet('weekly')} />
       <PlateauCard dismissible onTrain={() => go('train')} />
       <FriendsCard onOpen={() => setSheet('friends')} />
@@ -165,7 +168,7 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
         </button>
         <button className="card" style={{ textAlign: 'left', cursor: 'pointer', margin: 0 }} onClick={() => setSheet('sleep')}>
           <div className="small muted">Sleep last night</div>
-          <div style={{ fontSize: 24, fontWeight: 700 }} className="num">{sleep ? `${sleep.hours} h` : '—'}</div>
+          <div style={{ fontSize: 24, fontWeight: 700 }} className="num">{sleep ? `${sleep.hours} h` : '—'}{sleep?.mood ? <span style={{ fontSize: 18, marginLeft: 6 }}>{MOODS[sleep.mood - 1]}</span> : null}</div>
           <div className="small muted">{sleep ? `goal ${profile.sleep_target_h ?? 8} h` : 'tap to log'}</div>
         </button>
       </div>
@@ -195,7 +198,7 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
       {sheet === 'friends' && <FriendsSheet onClose={() => { setSheet(null); bump() }} />}
       {sheet === 'health' && <HealthSheet onClose={() => setSheet(null)} />}
       {sheet === 'weekly' && <WeeklySheet onClose={() => setSheet(null)} onDone={bump} />}
-      {sheet === 'sleep' && <SleepSheet current={sleep} onClose={() => setSheet(null)} onSaved={() => { load(); bump() }} />}
+      {sheet === 'sleep' && <MorningSheet current={sleep} onClose={() => setSheet(null)} onSaved={() => { load(); bump() }} />}
     </>
   )
 }
@@ -238,25 +241,3 @@ function WeightSheet({ current, onClose, onSaved }: { current: number; onClose: 
   )
 }
 
-function SleepSheet({ current, onClose, onSaved }: { current: SleepLog | null; onClose: () => void; onSaved: () => void }) {
-  const toast = useToast()
-  const [h, setH] = useState(current?.hours ?? 7.5)
-  const [q, setQ] = useState<number>(current?.quality ?? 3)
-  const save = async () => {
-    const { error } = await setSleep(isoDate(), h, q)
-    if (error) return toast(error.message)
-    toast('Sleep saved ✓')
-    onSaved()
-    onClose()
-  }
-  return (
-    <Sheet title="Sleep last night" onClose={onClose}>
-      <div style={{ textAlign: 'center', fontSize: 34, fontWeight: 700 }} className="num">{h} h</div>
-      <input type="range" min={3} max={12} step={0.5} value={h} onChange={(e) => setH(Number(e.target.value))} style={{ width: '100%', accentColor: 'var(--sleep)', margin: '12px 0 18px' }} aria-label="Hours slept" />
-      <label className="field"><span>How did you sleep?</span>
-        <Seg<number> options={[{ id: 1, label: '😫' }, { id: 2, label: '😕' }, { id: 3, label: '😐' }, { id: 4, label: '🙂' }, { id: 5, label: '😴' }]} value={q} onChange={setQ} />
-      </label>
-      <button className="btn block" onClick={save}>Save</button>
-    </Sheet>
-  )
-}
