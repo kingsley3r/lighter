@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useStore } from '../store'
 import { Seg, Sheet, useToast } from '../components/ui'
 import { ProgressCard } from '../components/ProgressPhotos'
+import PlateauCard from '../components/Plateau'
 import { stepsSince, type StepLog } from '../lib/steps'
 import { BarChart, LineChart, type Pt } from '../components/charts'
 import { addDays, isoDate, startOfDay } from '../lib/dates'
@@ -111,6 +112,8 @@ export default function Stats() {
       </section>
 
       <SmartTarget exp={exp} onApplied={bump} />
+
+      <PlateauCard />
 
       <ProgressCard />
 

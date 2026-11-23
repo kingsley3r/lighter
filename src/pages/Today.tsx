@@ -9,6 +9,7 @@ import { WeeklyCard, WeeklySheet } from '../components/WeeklyCheckin'
 import { HealthSheet, StepsCard } from '../components/Steps'
 import FriendsSheet, { FriendsCard } from '../components/Friends'
 import Coach from '../components/Coach'
+import PlateauCard, { RefeedBanner } from '../components/Plateau'
 import { addDays, fmtDay, fmtTime, isoDate, weekdayIdx } from '../lib/dates'
 import { activeWorkoutPlan, addWater, dayRange, latestWeight, loggingStreak, mealsBetween, setSleep, setWeight, sleepSince, sum, waterBetween, workoutsBetween } from '../lib/data'
 import { macroTargets, round1 } from '../lib/calc'
@@ -92,7 +93,9 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
         </div>
       </header>
 
+      <RefeedBanner />
       <WeeklyCard onOpen={() => setSheet('weekly')} />
+      <PlateauCard dismissible onTrain={() => go('train')} />
       <FriendsCard onOpen={() => setSheet('friends')} />
 
       <section className="card">

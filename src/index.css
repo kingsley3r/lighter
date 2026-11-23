@@ -660,3 +660,10 @@ section.card .fr-mini { border: 0; padding: 0; background: none; }
 .pet-actions { flex: 1 0 100%; display: flex; gap: 8px; }
 .pet-actions .btn { padding-left: 12px; padding-right: 12px; white-space: nowrap; }
 .pet-actions .pet-feed { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
+/* plateau check */
+.plateau{border:1px solid color-mix(in srgb,var(--warn) 35%,transparent)}
+.plateau-fixes{display:flex;flex-direction:column;gap:12px}
+.plateau-fix{display:flex;gap:10px;align-items:flex-start}
+.pf-icon{font-size:20px;width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:10px;background:var(--surface-2,rgba(0,0,0,.05))}
+.refeed{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,transparent);font-size:14px;line-height:1.4}
