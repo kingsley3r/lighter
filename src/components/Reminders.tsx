@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { Sheet, useToast } from './ui'
 
-type Kind = 'weigh' | 'lunch' | 'water' | 'workout' | 'dinner'
+type Kind = 'weigh' | 'lunch' | 'water' | 'workout' | 'dinner' | 'checkin'
 type Rem = { on: boolean; time: string }
 type Rems = Record<Kind, Rem>
 
@@ -12,6 +12,7 @@ const LIST: { id: Kind; icon: string; label: string; hint: string }[] = [
   { id: 'water', icon: '💧', label: 'Drink water', hint: 'Skipped once you hit your water goal' },
   { id: 'workout', icon: '💪', label: 'Workout', hint: 'Skipped if you trained today' },
   { id: 'dinner', icon: '🍽️', label: 'Log dinner', hint: 'Skipped if you logged a meal recently' },
+  { id: 'checkin', icon: '📅', label: 'Weekly check-in', hint: 'Sundays only, until you pick next week’s goal' },
 ]
 const DEFAULTS: Rems = {
   weigh: { on: true, time: '07:30' },
@@ -19,6 +20,7 @@ const DEFAULTS: Rems = {
   water: { on: true, time: '15:00' },
   workout: { on: false, time: '18:00' },
   dinner: { on: true, time: '19:30' },
+  checkin: { on: true, time: '18:00' },
 }
 
 const supported = () => typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window
