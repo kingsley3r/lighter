@@ -589,3 +589,14 @@ button.pet-stage { background: none; border: 0; padding: 0; font: inherit; color
 .bg-stadium i::before { content: '💡'; position: absolute; left: 10px; top: 8px; font-size: 18px; }
 .bg-stadium i::after { content: '💡'; position: absolute; left: 118px; top: 8px; font-size: 18px; }
 .bg-stadium b { left: 12%; right: 12%; bottom: 12px; height: 14px; border-radius: 4px; background: #ffd45c; box-shadow: 0 -10px 0 -4px #c9971c; }
+
+/* steps + apple health */
+.steps-card { display: block; width: 100%; background: none; border: 0; padding: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.health-cta { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px; margin-bottom: 14px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.health-cta .grow { display: flex; flex-direction: column; }
+.health-heart { font-size: 22px; }
+.health-steps { padding-left: 20px; margin: 8px 0; }
+.health-steps > li { margin-bottom: 12px; line-height: 1.45; }
+.health-steps ul { padding-left: 18px; margin: 6px 0 0; }
+.health-key { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0; }
+.health-key code { flex: 1 1 100%; font-size: 12px; padding: 8px 10px; border-radius: 10px; background: var(--surface-2); word-break: break-all; user-select: all; -webkit-user-select: all; }

@@ -5,6 +5,7 @@ export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack'
 export interface Profile {
   id: string
   display_name: string | null
+  step_target?: number | null
   pip_outfit?: { hat?: string; gear?: string; bg?: string } | null
   sex: Sex | null
   birth_year: number | null

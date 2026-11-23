@@ -6,6 +6,7 @@ import AddMeal from '../components/AddMeal'
 import FastingCard from '../components/Fasting'
 import DrinkSheet from '../components/DrinkSheet'
 import { WeeklyCard, WeeklySheet } from '../components/WeeklyCheckin'
+import { HealthSheet, StepsCard } from '../components/Steps'
 import { addDays, fmtDay, fmtTime, isoDate, weekdayIdx } from '../lib/dates'
 import { activeWorkoutPlan, addWater, dayRange, latestWeight, loggingStreak, mealsBetween, setSleep, setWeight, sleepSince, sum, waterBetween, workoutsBetween } from '../lib/data'
 import { macroTargets, round1 } from '../lib/calc'
@@ -21,7 +22,7 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
   const [sleep, setSl] = useState<SleepLog | null>(null)
   const [workout, setWorkout] = useState<PlannedWorkout | null>(null)
   const [doneToday, setDoneToday] = useState<WorkoutLog[]>([])
-  const [sheet, setSheet] = useState<null | 'meal' | 'weight' | 'sleep' | 'drink' | 'weekly'>(null)
+  const [sheet, setSheet] = useState<null | 'meal' | 'weight' | 'sleep' | 'drink' | 'weekly' | 'health'>(null)
   const [streak, setStreak] = useState(0)
 
   const load = useCallback(async () => {
@@ -118,6 +119,8 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
         <button className="link" style={{ marginTop: 8, paddingLeft: 0 }} onClick={() => setSheet('drink')}>+ Other drink (coffee, juice, soda…)</button>
       </section>
 
+      <StepsCard onHealth={() => setSheet('health')} />
+
       <section className="card">
         <div className="card-head">
           <h2>Today’s workout</h2>
@@ -179,6 +182,7 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
       {sheet === 'meal' && <AddMeal onClose={() => setSheet(null)} onSaved={() => { load(); bump() }} />}
       {sheet === 'weight' && <WeightSheet current={weight?.weight_kg ?? profile.start_weight_kg ?? 80} onClose={() => setSheet(null)} onSaved={() => { load(); bump() }} />}
       {sheet === 'drink' && <DrinkSheet onClose={() => setSheet(null)} onSaved={() => { load(); bump() }} />}
+      {sheet === 'health' && <HealthSheet onClose={() => setSheet(null)} />}
       {sheet === 'weekly' && <WeeklySheet onClose={() => setSheet(null)} onDone={bump} />}
       {sheet === 'sleep' && <SleepSheet current={sleep} onClose={() => setSheet(null)} onSaved={() => { load(); bump() }} />}
     </>

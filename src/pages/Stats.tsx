@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useStore } from '../store'
 import { Seg, Sheet, useToast } from '../components/ui'
 import { ProgressCard } from '../components/ProgressPhotos'
+import { stepsSince, type StepLog } from '../lib/steps'
 import { BarChart, LineChart, type Pt } from '../components/charts'
 import { addDays, isoDate, startOfDay } from '../lib/dates'
 import { mealsBetween, measurementsSince, sleepSince, sum, waterBetween, weightsSince, workoutsBetween, type Measurement } from '../lib/data'
@@ -10,7 +11,7 @@ import { supabase } from '../lib/supabase'
 import { macroTargets, round1 } from '../lib/calc'
 import type { MealLog, SleepLog, WaterLog, WeightLog, WorkoutLog } from '../lib/types'
 
-interface D { meals: MealLog[]; water: WaterLog[]; weights: WeightLog[]; sleep: SleepLog[]; workouts: WorkoutLog[]; allWeights: WeightLog[]; recentMeals: MealLog[]; measures: Measurement[] }
+interface D { meals: MealLog[]; water: WaterLog[]; weights: WeightLog[]; sleep: SleepLog[]; workouts: WorkoutLog[]; allWeights: WeightLog[]; recentMeals: MealLog[]; measures: Measurement[]; steps: StepLog[] }
 
 export default function Stats() {
   const { profile, version, bump } = useStore()
@@ -30,7 +31,8 @@ export default function Stats() {
       weightsSince('1900-01-01'),
       mealsBetween(startOfDay(addDays(new Date(), -22)).toISOString(), startOfDay(new Date()).toISOString()),
       measurementsSince('1900-01-01'),
-    ]).then(([meals, water, weights, sleep, workouts, allWeights, recentMeals, measures]) => setD({ meals, water, weights, sleep, workouts, allWeights, recentMeals, measures }))
+      stepsSince(isoDate(from)),
+    ]).then(([meals, water, weights, sleep, workouts, allWeights, recentMeals, measures, steps]) => setD({ meals, water, weights, sleep, workouts, allWeights, recentMeals, measures, steps }))
   }, [range, version])
 
   const days = Array.from({ length: range }, (_, i) => addDays(startOfDay(new Date()), -(range - 1 - i)))
@@ -52,12 +54,14 @@ export default function Stats() {
     const w = d.weights.find((x) => x.logged_on === isoDate(day))
     return { x: isoDate(day), label: lbl(day), y: w ? Number(w.weight_kg) : null }
   })
+  const stepPts = byDay(d.steps, (x) => x.day, (x) => x.steps)
   const minutes = byDay(d.workouts, (w) => localDay(w.done_at), (w) => w.duration_min ?? 30)
 
   const avg = (pts: Pt[]) => {
     const v = pts.map((p) => p.y).filter((x): x is number => x != null)
     return v.length ? sum(v, (x) => x) / v.length : null
   }
+  const avgSteps = avg(stepPts)
   const wv = d.weights.map((w) => Number(w.weight_kg))
   const change = wv.length >= 2 ? round1(wv[wv.length - 1] - wv[0]) : null
   const latest = d.allWeights.length ? Number(d.allWeights[d.allWeights.length - 1].weight_kg) : null
@@ -129,6 +133,11 @@ export default function Stats() {
       </div>
 
       <section className="card" style={{ marginTop: 12 }}>
+        <div className="card-head"><h2>👣 Steps</h2><span className="small muted num">{avgSteps != null ? `avg ${Math.round(avgSteps).toLocaleString('en-US')}` : ''}</span></div>
+        <BarChart data={stepPts} color="var(--accent)" target={profile.step_target ?? 8000} unit=" steps" />
+      </section>
+
+      <section className="card">
         <div className="card-head"><h2>💧 Water</h2></div>
         <BarChart data={water} color="var(--water)" target={profile.water_target_ml} unit=" ml" />
       </section>

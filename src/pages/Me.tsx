@@ -11,6 +11,7 @@ import { fastingVisible } from '../components/Fasting'
 import type { Activity, Profile, Sex } from '../lib/types'
 import { PetFigure, TrophySheet } from '../components/Pet'
 import { RemindersSheet } from '../components/Reminders'
+import { HealthSheet } from '../components/Steps'
 import { levelFor, usePipStats } from '../lib/pip'
 import { macroTargets } from '../lib/calc'
 
@@ -181,6 +182,8 @@ function SettingsSheet({ onClose }: { onClose: () => void }) {
   const [edit, setEdit] = useState<Part[] | null>(null)
   const [busy, setBusy] = useState(false)
   const [rem, setRem] = useState(false)
+  const [health, setHealth] = useState(false)
+  if (health) return <HealthSheet onClose={() => setHealth(false)} />
   if (rem) return <RemindersSheet onClose={() => setRem(false)} />
   if (edit) return <Sheet title={edit.includes('food') ? 'Food preferences' : 'Training setup'} onClose={() => setEdit(null)}><ProfileForm parts={edit} onDone={() => setEdit(null)} /></Sheet>
   return (
@@ -194,6 +197,7 @@ function SettingsSheet({ onClose }: { onClose: () => void }) {
       </section>
       <div className="set-list">
         <button onClick={() => setRem(true)}><span>🔔 Reminders</span><span className="muted">›</span></button>
+        <button onClick={() => setHealth(true)}><span>❤️ Apple Health (steps, weight)</span><span className="muted">›</span></button>
         <button onClick={() => setEdit(['food'])}><span>🥗 Food preferences</span><span className="muted">›</span></button>
         <button onClick={() => setEdit(['training'])}><span>🏋️ Training setup</span><span className="muted">›</span></button>
       </div>
