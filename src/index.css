@@ -801,3 +801,12 @@ section.card .fr-mini { border: 0; padding: 0; background: none; }
 .measure-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .measure-row{width:100%;background:none;border:0;border-top:1px solid var(--border);font:inherit;color:inherit;text-align:left;cursor:pointer;gap:8px}
 .measure-est{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft);margin-bottom:12px}
+
+/* meal ideas */
+.ideas{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.idea{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);font:inherit;color:inherit;text-align:center;cursor:pointer}
+.idea.on{border-color:var(--accent);background:var(--accent-soft)}
+.idea-emoji{font-size:28px}
+.idea-name{font-size:13px;font-weight:600;line-height:1.25}
+.idea-detail{margin-top:10px;padding:10px 12px;border-radius:14px;background:var(--surface-2)}
+.idea-detail ol{padding-left:18px;margin:8px 0 10px}

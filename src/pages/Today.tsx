@@ -14,6 +14,7 @@ import { MorningCard, MorningSheet } from '../components/Morning'
 import { MOODS } from '../lib/insights'
 import { HabitsCard } from '../components/Habits'
 import { QuestsCard } from '../components/Quests'
+import { MealIdeasCard } from '../components/MealIdeas'
 import { addDays, fmtDay, fmtTime, isoDate, weekdayIdx } from '../lib/dates'
 import { activeWorkoutPlan, addWater, dayRange, latestWeight, loggingStreak, mealsBetween, setSleep, setWeight, sleepSince, sum, waterBetween, workoutsBetween } from '../lib/data'
 import { macroTargets, round1 } from '../lib/calc'
@@ -118,6 +119,8 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
         </div>
         <button className="btn block" style={{ marginTop: 14 }} onClick={() => setSheet('meal')}>+ Log food</button>
       </section>
+
+      <MealIdeasCard kcalLeft={left} proteinLeft={macros.protein - sum(meals, (m) => Number(m.protein_g))} loggedTypes={new Set(meals.map((m) => m.meal_type ?? ''))} onLogged={load} />
 
       <section className="card">
         <div className="card-head">
