@@ -753,3 +753,15 @@ section.card .fr-mini { border: 0; padding: 0; background: none; }
 .hm.today{outline:2px solid var(--text);outline-offset:-1px}
 .hm:disabled{opacity:.25;cursor:default}
 @keyframes pop{50%{transform:scale(1.25)}}
+
+/* snack game + coins */
+.game-box{position:relative;height:min(62vh,460px);border-radius:18px;overflow:hidden;background:linear-gradient(#e8f4ff,#f3fbef);touch-action:none;user-select:none}
+:root[data-theme='dark'] .game-box{background:linear-gradient(#17263a,#152519)}
+@media (prefers-color-scheme: dark){:root:not([data-theme='light']) .game-box{background:linear-gradient(#17263a,#152519)}}
+.game-canvas{position:absolute;inset:0;width:100%;height:100%}
+.game-pip{position:absolute;left:0;bottom:2px;width:64px;height:64px;will-change:transform}
+.game-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:20px;text-align:center;background:color-mix(in srgb,var(--surface) 82%,transparent)}
+.game-overlay p{margin:0 0 8px;color:var(--muted)}
+.wr-buy{margin-top:12px;border:1.5px solid var(--accent)}
+.pet-actions{gap:6px}
+.pet-actions .btn.ghost{flex:0 0 auto;padding-left:10px;padding-right:10px}

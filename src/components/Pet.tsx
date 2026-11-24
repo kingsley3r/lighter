@@ -1,6 +1,7 @@
 import { GearBack, GearFront, Hat } from './PipWear'
 import { ITEMS, useOutfit, type Outfit } from '../lib/outfits'
 import Wardrobe, { PipBackground } from './Wardrobe'
+import SnackGame from './SnackGame'
 import Coach from './Coach'
 import { useEffect, useId, useMemo, useState, type PointerEvent as RPointerEvent } from 'react'
 import type { MealLog } from '../lib/types'
@@ -297,6 +298,7 @@ export default function PetCard({ meals, targets, feed, onFeed }: { meals: MealL
   const [bubble, setBubble] = useState<{ text: string; good: boolean; angry?: boolean } | null>(null)
   const [trophies, setTrophies] = useState(false)
   const [wardrobe, setWardrobe] = useState(false)
+  const [game, setGame] = useState(false)
   const [coach, setCoach] = useState(false)
   const [outfit] = useOutfit()
   const [pet, setPet] = useState<{ v: number; key: number; text: string } | null>(null)
@@ -423,10 +425,12 @@ export default function PetCard({ meals, targets, feed, onFeed }: { meals: MealL
       <div className="pet-actions">
           <button className="btn pet-feed" onClick={onFeed}>📷 Feed {name}</button>
           <button className="btn ghost" onClick={() => setCoach(true)} aria-label={`Ask ${name}`}>💬</button>
+          <button className="btn ghost" onClick={() => setGame(true)} aria-label="Play a game">🎮</button>
           <button className="btn ghost" onClick={() => setWardrobe(true)} aria-label="Wardrobe">👕</button>
           <button className="btn ghost" onClick={() => setTrophies(true)} aria-label="Trophies">🏆 {unlocked}</button>
         </div>
       {coach && <Coach name={name} level={lv.lvl} onClose={() => setCoach(false)} />}
+      {game && <SnackGame level={lv.lvl} onClose={() => setGame(false)} />}
       {wardrobe && <Wardrobe trophies={stats?.trophies ?? []} level={lv.lvl} name={name} onClose={() => setWardrobe(false)} />}
       {trophies && <TrophySheet trophies={stats?.trophies ?? []} name={name} xp={xp} onClose={() => setTrophies(false)} />}
     </section>

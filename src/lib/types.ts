@@ -8,6 +8,8 @@ export interface Profile {
   step_target?: number | null
   pip_outfit?: { hat?: string; gear?: string; bg?: string } | null
   milestone_kg?: number | null
+  coins?: number
+  pip_items?: string[]
   program?: import("./programs").ProgramState | null
   sex: Sex | null
   birth_year: number | null
