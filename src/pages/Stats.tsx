@@ -122,7 +122,7 @@ export default function Stats() {
 
       <section className="card">
         <div className="card-head"><h2>Body measurements</h2><button className="btn ghost sm" onClick={() => setMeasureOpen(true)}>+ Log</button></div>
-        <Measurements list={d.measures} />
+        <Measurements list={d.measures} weight={d.allWeights[d.allWeights.length - 1]?.weight_kg ?? null} onLog={() => setMeasureOpen(true)} />
       </section>
 
       <section className="card">
@@ -222,35 +222,69 @@ const FIELDS: { k: keyof Measurement; label: string }[] = [
   { k: 'chest_cm', label: 'Chest' },
   { k: 'arm_cm', label: 'Upper arm' },
   { k: 'thigh_cm', label: 'Thigh' },
+  { k: 'neck_cm', label: 'Neck' },
   { k: 'body_fat_pct', label: 'Body fat %' },
 ]
 
-function Measurements({ list }: { list: Measurement[] }) {
+/** US Navy tape method. Needs height, waist and neck (plus hips for women). */
+export function navyBodyFat(sex: string | null, height: number | null, waist: number | null, neck: number | null, hips: number | null): number | null {
+  if (!height || !waist || !neck || waist <= neck) return null
+  const lg = Math.log10
+  const v = sex === 'female'
+    ? (hips ? 495 / (1.29579 - 0.35004 * lg(waist + hips - neck) + 0.221 * lg(height)) - 450 : null)
+    : 495 / (1.0324 - 0.19077 * lg(waist - neck) + 0.15456 * lg(height)) - 450
+  return v != null && v > 2 && v < 60 ? Math.round(v * 10) / 10 : null
+}
+
+function Measurements({ list, weight, onLog }: { list: Measurement[]; weight: number | null; onLog: () => void }) {
+  const { profile } = useStore()
+  const [open, setOpen] = useState<keyof Measurement | null>(null)
   if (!list.length) return <p className="small muted" style={{ margin: 0 }}>Measure your waist every 2 weeks. It often drops even when the scale is stuck.</p>
   const first = list[0]
   const last = list[list.length - 1]
   const rows = FIELDS.filter((f) => last[f.k] != null)
+  const days = Math.round((Date.now() - new Date(last.measured_on).getTime()) / 864e5)
+  const bf = last.body_fat_pct != null ? Number(last.body_fat_pct) : null
+  const height = profile?.height_cm ?? null
+  const whtr = height && last.waist_cm ? Math.round((Number(last.waist_cm) / height) * 100) / 100 : null
+  const fatKg = bf != null && weight ? round1((Number(weight) * bf) / 100) : null
+  const series = (k: keyof Measurement): Pt[] => list.filter((m) => m[k] != null).map((m) => ({ x: m.measured_on, label: new Date(m.measured_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }), y: Number(m[k]) }))
   return (
     <div>
+      {days >= 14 && (
+        <button className="measure-due" onClick={onLog}>📏 Last measured {days} days ago. Time for a new tape check?</button>
+      )}
+      {(whtr != null || fatKg != null) && (
+        <div className="measure-tiles">
+          {whtr != null && <div className="stat-tile"><div className="v num">{whtr}</div><div className="l">waist / height {whtr < 0.5 ? '✓ healthy' : whtr < 0.6 ? '· aim < 0.5' : '· aim < 0.5'}</div></div>}
+          {fatKg != null && <div className="stat-tile"><div className="v num">{fatKg} kg</div><div className="l">fat · {round1(Number(weight) - fatKg)} kg lean</div></div>}
+        </div>
+      )}
       {rows.map((f) => {
         const a = first[f.k] as number | null
         const b = last[f.k] as number
         const delta = a != null && first !== last ? round1(b - a) : null
+        const pts = series(f.k)
         return (
-          <div key={f.k} className="list-item">
-            <div className="grow">{f.label}</div>
-            <div className="num" style={{ fontWeight: 600 }}>{b}{f.k === 'body_fat_pct' ? ' %' : ' cm'}</div>
-            {delta != null && <span className={'pill' + (delta < 0 ? ' accent' : '')}>{delta > 0 ? '+' : ''}{delta}</span>}
+          <div key={f.k}>
+            <button className="list-item measure-row" onClick={() => setOpen(open === f.k ? null : f.k)} aria-expanded={open === f.k}>
+              <div className="grow">{f.label}</div>
+              <div className="num" style={{ fontWeight: 600 }}>{b}{f.k === 'body_fat_pct' ? ' %' : ' cm'}</div>
+              {delta != null && <span className={'pill' + (delta < 0 ? ' accent' : '')}>{delta > 0 ? '+' : ''}{delta}</span>}
+              <span className="muted">{pts.length > 1 ? (open === f.k ? '▴' : '▾') : ''}</span>
+            </button>
+            {open === f.k && pts.length > 1 && <div style={{ padding: '4px 0 10px' }}><LineChart data={pts} color="var(--accent)" unit={f.k === 'body_fat_pct' ? ' %' : ' cm'} /></div>}
           </div>
         )
       })}
-      <p className="small muted" style={{ marginBottom: 0 }}>Last measured {new Date(last.measured_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}{first !== last ? `, change since ${new Date(first.measured_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}` : ''}.</p>
+      <p className="small muted" style={{ marginBottom: 0 }}>Last measured {new Date(last.measured_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}{first !== last ? `, change since ${new Date(first.measured_on).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}` : ''}. Tap a row for its chart.</p>
     </div>
   )
 }
 
 function MeasureSheet({ last, onClose, onSaved }: { last?: Measurement; onClose: () => void; onSaved: () => void }) {
   const toast = useToast()
+  const { profile } = useStore()
   const [v, setV] = useState<Record<string, string>>(() => Object.fromEntries(FIELDS.map((f) => [f.k, last?.[f.k] != null ? String(last[f.k]) : ''])))
   const save = async () => {
     const row: Record<string, number | null | string> = { measured_on: isoDate() }
@@ -271,6 +305,16 @@ function MeasureSheet({ last, onClose, onSaved }: { last?: Measurement; onClose:
           </label>
         ))}
       </div>
+      {(() => {
+        const n = (x: string) => (x ? Number(x.replace(',', '.')) || null : null)
+        const est = navyBodyFat(profile?.sex ?? null, profile?.height_cm ?? null, n(v.waist_cm), n(v.neck_cm), n(v.hips_cm))
+        return est != null ? (
+          <div className="measure-est">
+            <span className="small">Estimated body fat from your tape: <b className="num">{est} %</b></span>
+            <button className="btn ghost sm" onClick={() => setV({ ...v, body_fat_pct: String(est) })}>Use</button>
+          </div>
+        ) : <p className="small muted" style={{ marginTop: 0 }}>Add waist and neck{profile?.sex === 'female' ? ' and hips' : ''} and Lighter estimates your body fat (US Navy tape method).</p>
+      })()}
       <button className="btn block" onClick={save}>Save</button>
     </Sheet>
   )

@@ -123,7 +123,7 @@ export async function lastFasts(n = 7) {
 }
 
 // ---------- Body measurements ----------
-export interface Measurement { id: number; measured_on: string; waist_cm: number | null; hips_cm: number | null; chest_cm: number | null; arm_cm: number | null; thigh_cm: number | null; body_fat_pct: number | null }
+export interface Measurement { id: number; measured_on: string; waist_cm: number | null; hips_cm: number | null; chest_cm: number | null; arm_cm: number | null; thigh_cm: number | null; body_fat_pct: number | null; neck_cm?: number | null }
 export async function measurementsSince(fromDate: string) {
   const { data } = await supabase.from('body_measurements').select('*').gte('measured_on', fromDate).order('measured_on')
   return (data ?? []) as Measurement[]
