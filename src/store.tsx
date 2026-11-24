@@ -91,3 +91,22 @@ export function useTheme(): [string, (t: string) => void] {
   }
   return [theme, setTheme]
 }
+
+export const ACCENTS: { id: string; label: string; color: string }[] = [
+  { id: 'forest', label: 'Forest', color: '#2f7d5b' },
+  { id: 'ocean', label: 'Ocean', color: '#2563a8' },
+  { id: 'berry', label: 'Berry', color: '#b03a6b' },
+  { id: 'sunset', label: 'Sunset', color: '#c4581f' },
+  { id: 'grape', label: 'Grape', color: '#6d4bc0' },
+  { id: 'mono', label: 'Graphite', color: '#2e3440' },
+]
+export function useAccent(): [string, (a: string) => void] {
+  const [accent, setA] = useState<string>(() => { try { return localStorage.getItem('accent') || 'forest' } catch { return 'forest' } })
+  const set = (a: string) => {
+    setA(a)
+    try { if (a === 'forest') localStorage.removeItem('accent'); else localStorage.setItem('accent', a) } catch { /* ignore */ }
+    if (a === 'forest') delete document.documentElement.dataset.accent
+    else document.documentElement.dataset.accent = a
+  }
+  return [accent, set]
+}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useStore, useTheme } from '../store'
+import { ACCENTS, useAccent, useStore, useTheme } from '../store'
 import { Chips, Seg, Sheet, useToast } from '../components/ui'
 import { ACTIVITY, age, bmi, computeTargets, round1 } from '../lib/calc'
 import { latestWeight } from '../lib/data'
@@ -158,7 +158,7 @@ async function exportBackup(email: string | undefined) {
     out[t] = rows
   }
   const local: Record<string, string> = {}
-  for (const k of ['pet-name', 'pantry', 'theme', 'show-fasting', 'pet-pets']) { try { const v = localStorage.getItem(k); if (v != null) local[k] = v } catch { /* ignore */ } }
+  for (const k of ['pet-name', 'pantry', 'theme', 'accent', 'show-fasting', 'pet-pets']) { try { const v = localStorage.getItem(k); if (v != null) local[k] = v } catch { /* ignore */ } }
   out.device_settings = local
   const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' })
   const name = `lighter-backup-${new Date().toISOString().slice(0, 10)}.json`
@@ -179,6 +179,7 @@ function SettingsSheet({ onClose }: { onClose: () => void }) {
   const { session } = useStore()
   const toast = useToast()
   const [theme, setTheme] = useTheme()
+  const [accent, setAccent] = useAccent()
   const [fasting, setFasting] = useState<'on' | 'off'>(fastingVisible() ? 'on' : 'off')
   const [edit, setEdit] = useState<Part[] | null>(null)
   const [busy, setBusy] = useState(false)
@@ -192,6 +193,10 @@ function SettingsSheet({ onClose }: { onClose: () => void }) {
       <section className="form-sec">
         <h3>Appearance</h3>
         <Seg options={[{ id: 'system', label: 'Auto' }, { id: 'light', label: '☀️ Light' }, { id: 'dark', label: '🌙 Dark' }]} value={theme} onChange={setTheme} />
+        <div className="small muted" style={{ marginTop: 14 }}>Color theme</div>
+        <div className="accent-pick" role="radiogroup" aria-label="Color theme">
+          {ACCENTS.map((a) => <button key={a.id} role="radio" aria-checked={accent === a.id} aria-label={a.label} title={a.label} className={`accent-dot${accent === a.id ? ' on' : ''}`} style={{ background: a.color }} onClick={() => setAccent(a.id)}>{a.label}</button>)}
+        </div>
         <label className="field" style={{ marginTop: 14, marginBottom: 0 }}><span>Fasting timer on Today</span>
           <Seg<'on' | 'off'> options={[{ id: 'on', label: 'Show' }, { id: 'off', label: 'Hide' }]} value={fasting} onChange={(v) => { setFasting(v); try { localStorage.setItem('show-fasting', v) } catch { /* ignore */ } }} />
         </label>

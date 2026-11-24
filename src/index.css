@@ -718,3 +718,23 @@ section.card .fr-mini { border: 0; padding: 0; background: none; }
 @keyframes msEvolve{0%{filter:brightness(1)}30%{filter:brightness(2.4) drop-shadow(0 0 18px #f6c453);transform:scale(1.12)}100%{filter:brightness(1)}}
 @keyframes spark{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1.1)}}
 @media (prefers-reduced-motion: reduce){.ms-card,.ms-pip.evolved svg,.pet-spark{animation:none}}
+
+/* color themes (accent) */
+:root[data-accent='ocean']{--accent:#2563a8;--accent-soft:#dce8f7}
+:root[data-theme='dark'][data-accent='ocean']{--accent:#6aa8f0;--accent-soft:#1b2c42}
+@media (prefers-color-scheme: dark){:root:not([data-theme='light'])[data-accent='ocean']{--accent:#6aa8f0;--accent-soft:#1b2c42}}
+:root[data-accent='berry']{--accent:#b03a6b;--accent-soft:#f6dce7}
+:root[data-theme='dark'][data-accent='berry']{--accent:#ee80ad;--accent-soft:#3d1f2c}
+@media (prefers-color-scheme: dark){:root:not([data-theme='light'])[data-accent='berry']{--accent:#ee80ad;--accent-soft:#3d1f2c}}
+:root[data-accent='sunset']{--accent:#c4581f;--accent-soft:#fbe3d3}
+:root[data-theme='dark'][data-accent='sunset']{--accent:#f39a5f;--accent-soft:#3d2516}
+@media (prefers-color-scheme: dark){:root:not([data-theme='light'])[data-accent='sunset']{--accent:#f39a5f;--accent-soft:#3d2516}}
+:root[data-accent='grape']{--accent:#6d4bc0;--accent-soft:#e7e0f7}
+:root[data-theme='dark'][data-accent='grape']{--accent:#a990f0;--accent-soft:#2a2442}
+@media (prefers-color-scheme: dark){:root:not([data-theme='light'])[data-accent='grape']{--accent:#a990f0;--accent-soft:#2a2442}}
+:root[data-accent='mono']{--accent:#2e3440;--accent-soft:#e3e6ea}
+:root[data-theme='dark'][data-accent='mono']{--accent:#d6dbe3;--accent-soft:#2a2f37}
+@media (prefers-color-scheme: dark){:root:not([data-theme='light'])[data-accent='mono']{--accent:#d6dbe3;--accent-soft:#2a2f37}}
+.accent-pick{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.accent-dot{width:38px;height:38px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--border);cursor:pointer;font-size:0}
+.accent-dot.on{box-shadow:0 0 0 3px var(--text)}
