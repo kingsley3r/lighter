@@ -29,6 +29,14 @@ export default defineConfig({
         navigateFallbackDenylist: [/^\/api\//],
         maximumFileSizeToCacheInBytes: 3000000,
         importScripts: ['push-sw.js'],
+        runtimeCaching: [
+          {
+            // last known data so the app still opens and shows your day without signal
+            urlPattern: ({ url, request }) => url.hostname.endsWith('.supabase.co') && url.pathname.startsWith('/rest/v1/') && !url.pathname.startsWith('/rest/v1/rpc/') && request.method === 'GET',
+            handler: 'NetworkFirst',
+            options: { cacheName: 'lighter-data', networkTimeoutSeconds: 6, matchOptions: { ignoreVary: true }, expiration: { maxEntries: 400, maxAgeSeconds: 14 * 86400 }, cacheableResponse: { statuses: [200] } },
+          },
+        ],
       },
     }),
   ],

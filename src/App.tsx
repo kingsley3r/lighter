@@ -1,3 +1,4 @@
+import OfflineBar from './components/OfflineBar'
 import { useEffect, useState } from 'react'
 import { useStore } from './store'
 import AuthPage from './pages/Auth'
@@ -55,6 +56,7 @@ export default function App() {
   return (
     <>
       <MilestoneWatcher />
+      <OfflineBar />
       <main className="app">
         {tab === 'today' && <Today go={setTab} />}
         {tab === 'food' && <Food />}

@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from './lib/supabase'
+import { clearQueue } from './lib/offline'
 import type { Profile } from './lib/types'
 
 interface Store {
@@ -41,7 +42,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       if (data.session) await loadProfile(data.session.user.id)
       setLoading(false)
     })
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((e, s) => {
+      if (e === 'SIGNED_OUT') { clearQueue(); if ('caches' in window) caches.delete('lighter-data') }
       setSession(s)
       if (s) loadProfile(s.user.id)
       else setProfile(null)

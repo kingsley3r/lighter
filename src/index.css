@@ -813,3 +813,6 @@ section.card .fr-mini { border: 0; padding: 0; background: none; }
 
 .forecast{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--accent-soft, rgba(127,127,127,.08))}
 .forecast-icon{font-size:22px;line-height:1.2}
+
+.offline-bar{position:sticky;top:0;z-index:30;margin:0 auto;max-width:560px;padding:8px 14px;font-size:13px;text-align:center;background:#3a3f45;color:#fff;border-radius:0 0 12px 12px}
+.offline-bar.syncing{background:var(--accent);color:var(--accent-text, #fff)}
