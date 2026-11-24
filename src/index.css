@@ -765,3 +765,12 @@ section.card .fr-mini { border: 0; padding: 0; background: none; }
 .wr-buy{margin-top:12px;border:1.5px solid var(--accent)}
 .pet-actions{gap:6px}
 .pet-actions .btn.ghost{flex:0 0 auto;padding-left:10px;padding-right:10px}
+
+/* quests */
+.quests{display:flex;flex-direction:column;gap:8px}
+.quest{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:14px;background:var(--surface-2)}
+.quest.ready{background:var(--accent-soft);outline:1.5px solid var(--accent)}
+.quest.got{opacity:.6}
+.quest-icon{font-size:20px;width:28px;text-align:center}
+.quest-bar{height:5px;border-radius:9px;background:var(--border);margin-top:5px;overflow:hidden}
+.quest-bar span{display:block;height:100%;background:var(--accent);border-radius:9px}
