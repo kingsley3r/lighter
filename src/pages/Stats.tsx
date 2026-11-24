@@ -9,6 +9,7 @@ import { BarChart, LineChart, type Pt } from '../components/charts'
 import { addDays, isoDate, startOfDay } from '../lib/dates'
 import { mealsBetween, measurementsSince, sleepSince, sum, waterBetween, weightsSince, workoutsBetween, type Measurement } from '../lib/data'
 import { estimateExpenditure, trendSeries } from '../lib/trend'
+import { forecastGoal } from '../lib/forecast'
 import { supabase } from '../lib/supabase'
 import { macroTargets, round1 } from '../lib/calc'
 import type { MealLog, SleepLog, WaterLog, WeightLog, WorkoutLog } from '../lib/types'
@@ -104,6 +105,7 @@ export default function Stats() {
           <Tile v={totalLost != null ? `${totalLost > 0 ? '−' : ''}${Math.abs(totalLost)} kg` : '—'} l="Lost so far" />
           <Tile v={toGoal != null ? `${Math.max(0, toGoal)} kg` : '—'} l="To goal" />
         </div>
+        <GoalForecast weights={d.allWeights} target={profile.target_weight_kg} />
       </section>
 
       <section className="card">
@@ -323,5 +325,23 @@ function MeasureSheet({ last, onClose, onSaved }: { last?: Measurement; onClose:
 function Tile({ v, l }: { v: string; l: string }) {
   return (
     <div className="stat-tile"><div className="v num">{v}</div><div className="l">{l}</div></div>
+  )
+}
+
+function GoalForecast({ weights, target }: { weights: WeightLog[]; target: number | null }) {
+  const f = forecastGoal(weights, target)
+  const fmt = (dt: Date) => dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: dt.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined })
+  const pace = f.perWeek != null ? `${f.perWeek > 0 ? '+' : '−'}${Math.abs(f.perWeek).toFixed(2)} kg/week` : ''
+  let icon = '🔮', head = '', sub = ''
+  if (f.kind === 'need_data') { head = 'Goal date forecast'; sub = 'Weigh in a few times over 10+ days and Pip will predict when you reach your goal.' }
+  else if (f.kind === 'reached') { icon = '🎉'; head = 'You are at your goal!'; sub = 'Time to hold steady. Pip is proud.' }
+  else if (f.kind === 'flat') { icon = '⏸️'; head = 'Trend is flat right now'; sub = `Pace ${pace} over 4 weeks. A small calorie dip or a few more steps gets it moving again.` }
+  else if (f.kind === 'gaining') { icon = '↗️'; head = 'Trend is moving away from goal'; sub = `Pace ${pace} over 4 weeks. Check the last week's logging, it happens to everyone.` }
+  else if (f.date) { icon = '🎯'; head = `Goal around ${fmt(f.date)}`; sub = `At your 4-week pace of ${pace}, about ${f.weeksLeft} week${f.weeksLeft === 1 ? '' : 's'} to go.` }
+  return (
+    <div className="forecast">
+      <span className="forecast-icon" aria-hidden="true">{icon}</span>
+      <div><b>{head}</b><div className="small muted">{sub}</div></div>
+    </div>
   )
 }
