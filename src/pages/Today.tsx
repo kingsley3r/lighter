@@ -12,6 +12,7 @@ import Coach from '../components/Coach'
 import PlateauCard, { RefeedBanner } from '../components/Plateau'
 import { MorningCard, MorningSheet } from '../components/Morning'
 import { MOODS } from '../lib/insights'
+import { HabitsCard } from '../components/Habits'
 import { addDays, fmtDay, fmtTime, isoDate, weekdayIdx } from '../lib/dates'
 import { activeWorkoutPlan, addWater, dayRange, latestWeight, loggingStreak, mealsBetween, setSleep, setWeight, sleepSince, sum, waterBetween, workoutsBetween } from '../lib/data'
 import { macroTargets, round1 } from '../lib/calc'
@@ -132,6 +133,7 @@ export default function Today({ go }: { go: (t: Tab) => void }) {
       </section>
 
       <StepsCard onHealth={() => setSheet('health')} />
+      <HabitsCard />
 
       <section className="card">
         <div className="card-head">
